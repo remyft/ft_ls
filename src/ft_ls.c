@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/04 09:03:08 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/05 12:24:57 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ void	sort_alpha(t_indir *names, int size)
 		while (i < size)
 		{
 			if (i + 1 != size && strcmp(curr->name, curr->next->name) > 0)
+			{
 				continuer = str_swap(curr);
+				
+			}
 			else
 			{
 				i++;
@@ -52,13 +55,17 @@ void	sort_alpha(t_indir *names, int size)
 	}
 }
 
-t_indir	*set_indir(t_indir *ret, char *name, unsigned char type)
+static t_indir	*set_indir(char *name, unsigned char type)
 {
 	struct stat *buf;
+	t_indir	*ret;
+	ret = (t_indir*)malloc(sizeof(t_indir));
 
 	buf = NULL;
 	ret->name = strdup(name);
 	ret->type = type;
+	ret->next = NULL;
+	ret->prev = NULL;
 	/*if (stat(ret->name, buf) == -1)
 		exit(2);
 	ret->type = buf->st_mode;*/
@@ -70,33 +77,41 @@ void	deal_file(t_lst *lst)
 	int				i;
 	t_indir			*prev;
 	t_indir			*curr;
-	t_indir			*begin;
 	DIR				*dir;
 	struct dirent	*indir;
 
-	dir = opendir((char*)lst->name);
-	lst->indir = (t_indir*)malloc(sizeof(t_indir));
-	lst->indir->next = NULL;
-	lst->indir->prev = NULL;
-	curr = lst->indir;
-	prev = lst->indir;
-	begin = lst->indir;
+//	lst->indir = (t_indir*)malloc(sizeof(t_indir));
+//	lst->indir->next = NULL;
+//	lst->indir->prev = NULL;
+	curr = NULL;
 	dir = opendir((char*)lst->name);
 	i = 0;
+	if ((indir = readdir(dir)))
+	{
+		lst->indir = set_indir(indir->d_name, indir->d_type);
+		i++;
+	}
 	while ((indir = readdir(dir)))
 	{
-		curr = set_indir(curr, indir->d_name, indir->d_type);
-		curr = curr->next;
-		curr = (t_indir*)malloc(sizeof(t_indir));
-		curr->prev = prev;
-		prev->next = curr;
+		curr = set_indir(indir->d_name, indir->d_type);
+		if (i == 1)
+		{
+			lst->indir->next = curr;
+			curr->prev = lst->indir;
+		}
+		else
+			curr->prev = prev;
+		if (i != 1) 
+			prev->next = curr;
 		prev = curr;
+		curr = curr->next;
 		i++;
 	}
 	lst->size = i;
-	curr->next = NULL;
 	sort_alpha(lst->indir, i);
-	put_list(begin, lst->size);
+	(g_fg & REVERSE) ? put_list(prev, i) : put_list(lst->indir, i);
+	if (g_fg & RECURSIVE)
+		(g_fg & REVERSE) ? put_dlist(prev, i, lst->name) : put_dlist(lst->indir, i, lst->name);
 }
 
 int		main(int ac, char **av)

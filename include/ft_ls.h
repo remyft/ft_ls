@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/04 08:59:57 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/05 11:49:47 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void				unset(int flag);
 void				get_flag(char *flags);
 
 void				put_list(t_indir *list, int size);
+void				put_dlist(t_indir *list, int size, char *name);
+
 t_lst				*lst_new(char *file);
 
 void				deal_file(t_lst *lst);

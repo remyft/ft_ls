@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/04 09:10:26 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/05 12:25:42 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,60 @@ t_lst	*lst_new(char *file)
 void	put_list(t_indir *list, int size)
 {
 	int i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (list->name[0] == '.' && !(g_fg & ALL_FILE))
+		{
+			list = (g_fg & REVERSE) ? list->prev : list->next;
+			i++;
+		}
+		else
+		{
+			ft_putstr(list->name);
+			ft_putchar('\n');
+			list = (g_fg & REVERSE) ? list->prev : list->next;
+			i++;
+		}
+	}
+	ft_putchar('\n');
+}
+
+void	put_dlist(t_indir *list, int size, char *name)
+{
+	int i;
 	t_lst	*file;
+	char	*tmp;
+
 
 	i = 0;
 	file = NULL;
 	while (i < size)
 	{
-		if (list->name[0] != '.')
+		tmp = ft_strdup(name);
+		if (list->name[0] == '.' && !(g_fg & ALL_FILE))
 		{
-			if (list->type & DT_DIR && g_fg & RECURSIVE)
-			{
-				ft_putchar('\n');
-				ft_putstr(list->name);
-				ft_putstr(":\n");
-				file = lst_new(list->name);
-				deal_file(file);
-				ft_putchar('\n');
-			}
-			else
-			{
-				ft_putstr(list->name);
-				ft_putchar('\n');
-			}
+			list = (g_fg & REVERSE) ? list->prev : list->next;
+			i++;
 		}
-		list = list->next;
-		i++;
+		else if (list->type & DT_DIR && (ft_strcmp(list->name, ".") != 0) && (ft_strcmp(list->name, "..") != 0))
+		{
+			tmp  = ft_strjoin(tmp, "/");
+			tmp = ft_strjoin(tmp, list->name);
+			ft_putstr(tmp);
+			ft_putstr(":\n");
+			file = lst_new(tmp);
+			deal_file(file);
+			free(tmp);
+			list = (g_fg & REVERSE) ? list->prev :  list->next;
+			i++;
+		}
+		else
+		{
+			list = (g_fg & REVERSE) ? list->prev : list->next;
+			i++;
+		}
 	}
 }
 
