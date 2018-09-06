@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/05 11:49:47 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/06 15:30:56 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <dirent.h>
+
+# define F_access_fail 1 << 0
 
 typedef struct		s_indir
 {

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/06 19:18:24 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/06 19:07:46 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 #include <stdio.h>
 
-int		str_swap(t_indir *curr)
+t_indir		*str_swap(t_indir *curr, t_indir *next)
 {
-	char	*tmp_name;
-	int		tmp_type;
+	t_indir		*tmp_prev;
+	t_indir		*tmp_next;
 
-	tmp_name  = curr->name;
-	tmp_type = curr->type;
-	curr->name = curr->next->name;
-	curr->type = curr->next->type;
-	curr->next->name = tmp_name;
-	curr->next->type = tmp_type;
-	return (0);
+	tmp_prev = curr->prev;  
+	tmp_next = next->next;
+	curr->next = next->next;
+	if (curr->next)
+		curr->next->prev = curr;
+	curr->prev = next;
+	next->next = curr;
+	next->prev = tmp_prev;
+	if (next->prev)
+		next->prev->next = next;
+	return (curr);
 }
 
 void	sort_alpha(t_indir **names, int size)
@@ -42,9 +46,11 @@ void	sort_alpha(t_indir **names, int size)
 		curr = (*names);
 		while (i < size)
 		{
-			if (i + 1 != size &&  strcmp(curr->name, curr->next->name) > 0)
+			if (i + 1 != size && curr->next &&  strcmp(curr->name, curr->next->name) > 0)
 			{
-				continuer = str_swap(curr);
+				curr = str_swap(curr, curr->next);
+				curr = curr->prev;
+				continuer = 0;
 			}
 			else
 			{
@@ -73,16 +79,6 @@ static t_indir	*set_indir(char *name, unsigned char type)
 	return (ret);
 }
 
-void	put_error(int error, char *name)
-{
-	if (error & F_access_fail)
-	{
-		ft_putstr("ft_ls: ");
-		ft_putstr(name);
-		ft_putstr(": Permission denied\n");
-	}	
-}
-
 void	deal_file(t_lst *lst)
 {
 	int				i;
@@ -93,7 +89,7 @@ void	deal_file(t_lst *lst)
 
 	curr = NULL;
 	if (!(dir = opendir((char*)lst->name)))
-		return (put_error(1, lst->name));
+		return ;
 	i = 0;
 	if ((indir = readdir(dir)))
 	{
