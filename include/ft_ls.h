@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/06 15:30:56 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/07 03:43:34 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 # include "../libft/libft.h"
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <unistd.h>
 # include <dirent.h>
+# include <errno.h>
+# include <pwd.h>
+# include <grp.h>
+#include <time.h>
 
 # define F_access_fail 1 << 0
 
@@ -23,6 +28,12 @@ typedef struct		s_indir
 {
 	char			*name;
 	unsigned int	type;
+	char			*right;
+	int				nb_link;
+	char			*uid_user;
+	char			*gid_user;
+	int				size;
+	char			*time;
 	struct s_indir	*next;
 	struct s_indir	*prev;
 }					t_indir;
@@ -52,6 +63,7 @@ void				get_flag(char *flags);
 
 void				put_list(t_indir *list, int size);
 void				put_dlist(t_indir *list, int size, char *name);
+void				put_llist(t_indir *list, int size);
 
 t_lst				*lst_new(char *file);
 
