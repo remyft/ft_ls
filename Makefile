@@ -6,7 +6,7 @@
 #    By: dbaffier <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/05 13:53:00 by dbaffier          #+#    #+#              #
-#    Updated: 2018/09/06 14:43:16 by rfontain         ###   ########.fr        #
+#    Updated: 2018/09/08 09:10:08 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,10 @@ INCS = -I $(LIB_PATH)/ -I $(INC_DIR)
 
 SRCS =	src/ft_ls.c			\
 		src/flag_handler.c	\
-		src/file_handler.c	\
+		src/tools.c			\
+		src/indir_handler.c	\
+		src/list_handler.c	\
+		src/utiles.c		\
 
 OK =      $(GREEN)[OK]$(RESET)		
 
