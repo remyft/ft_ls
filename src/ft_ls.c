@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/08 08:59:01 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/12 07:59:37 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,21 @@ void	deal_file(t_lst *lst)
 	struct dirent	*indir;
 
 	curr = NULL;
+	lst->nb_blk = 0;
 	error = 1;
 	if (!(dir = opendir((char*)lst->name)))
 		return (put_error(1, lst));
 	i = 0;
 	if ((indir = readdir(dir)))
 	{
-		lst->indir = set_indir(indir->d_name, indir->d_type);
+		if (!(lst->indir = set_indir(indir->d_name, indir->d_type, lst->name)))
+			return (put_error(1 << 2, lst));
 		i++;
 	}
 	while ((indir = readdir(dir)))
 	{
-		curr = set_indir(indir->d_name, indir->d_type);
+		if (!(curr = set_indir(indir->d_name, indir->d_type, lst->name)))
+			return (put_error(1 << 2, lst));
 		if (i == 1)
 		{
 			lst->indir->next = curr;
@@ -49,18 +52,20 @@ void	deal_file(t_lst *lst)
 	}
 	lst->size = i;
 	sort_alpha(lst->indir, i);
-	if (g_fg & LONG_LISTING)
+	if (g_fg & DATE_SORT)
+		sort_date(lst->indir, i);
+	if (g_fg & LONG_LISTING || g_fg & DATE_SORT)
 	{
 		curr = lst->indir;
 		while (curr)
 		{
-			if (!(curr = set_stat_indir(curr, lst->name)))
-				return (put_error(2, lst));
+			if (!(curr = set_stat_indir(curr, lst->name, lst)))
+				return (put_error(1 << 2, lst));
 			curr = curr->next;
 		}
 	}
 	if (g_fg & LONG_LISTING && error)
-		(g_fg & REVERSE) ? put_llist(prev, i) : put_llist(lst->indir, i);
+		(g_fg & REVERSE) ? put_llist(prev, i, lst->nb_blk) : put_llist(lst->indir, i, lst->nb_blk);
 	else
 		(g_fg & REVERSE) ? put_list(prev, i) : put_list(lst->indir, i);
 	if (g_fg & RECURSIVE)

@@ -6,22 +6,19 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/07 04:09:04 by rfontain          #+#    #+#             */
-/*   Updated: 2018/04/10 02:11:12 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/12 07:48:37 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	char	*ft_strrev_itoa(char *str)
+static	char	*ft_strrev_itoa(char *str, int i)
 {
-	int		i;
 	int		j;
 	char	*rev;
 
-	i = ft_strlen(str) - 1;
 	j = 0;
-	if ((rev = (char*)malloc(sizeof(char) * (ft_strlen(str) + 1))) == NULL)
-		return (NULL);
+	rev = (char*)malloc(sizeof(char) * 13);
 	if (str[0] == '-')
 	{
 		rev[0] = str[0];
@@ -58,5 +55,5 @@ char			*ft_itoa(int n)
 		i++;
 	}
 	str[i] = '\0';
-	return (ft_strrev_itoa(str));
+	return (ft_strrev_itoa(str, i - 1));
 }

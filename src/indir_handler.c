@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/08 09:05:21 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/12 07:18:47 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,24 +60,42 @@ char	*set_right(mode_t file_stat)
 	return (tab);
 }
 
-t_indir	*set_indir(char *name, unsigned char type)
+t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 {
 	t_indir		*ret;
+	char		*tmp;
+	struct stat	file_stat;
 
 	ret = (t_indir*)malloc(sizeof(t_indir));
 	ret->name = strdup(name);
 	ret->type = type;
 	ret->next = NULL;
 	ret->prev = NULL;
+	if (g_fg & DATE_SORT || g_fg & LONG_LISTING)
+	{
+		if (name[0] != '/')
+		{
+			tmp = ft_strjoin(lst_name, "/");
+			tmp = ft_strjoinfree(tmp, name, 1);
+		}
+		else
+			tmp = name;
+		if ((lstat(tmp, &file_stat)) == -1)
+			return (NULL);
+		free(tmp);
+		ret->itime = file_stat.st_mtime;
+	}
+	else
+		ret->itime = 0;
 	return (ret);
 }
 
-t_indir	*set_stat_indir(t_indir *lst, char *lst_name)
+t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
 {
-	struct stat	file_stat;
+	struct stat		file_stat;
 	struct passwd	*uid;
 	struct group	*gid;
-	char *tmp;
+	char			*tmp;
 
 	if (lst->name[0] != '/')
 	{
@@ -89,6 +107,8 @@ t_indir	*set_stat_indir(t_indir *lst, char *lst_name)
 	if ((lstat(tmp, &file_stat)) == -1)
 		return (NULL);
 	free(tmp);
+	if (lst->name[0] != '.' || g_fg & ALL_FILE)
+		par->nb_blk += file_stat.st_blocks;
 	lst->nb_link = file_stat.st_nlink;
 	lst->right = set_right(file_stat.st_mode);
 	uid = getpwuid(file_stat.st_uid);
@@ -98,8 +118,8 @@ t_indir	*set_stat_indir(t_indir *lst, char *lst_name)
 	lst->size = file_stat.st_size;
 	if (S_ISBLK(file_stat.st_mode) || S_ISCHR(file_stat.st_mode))
 	{
-		lst->major = major(file_stat.st_mode);
-		lst->minor = minor(file_stat.st_mode);
+		lst->major = major(file_stat.st_rdev);
+		lst->minor = minor(file_stat.st_rdev);
 	}
 	else
 	{
