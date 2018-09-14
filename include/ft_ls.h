@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/12 07:59:50 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/14 04:46:21 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 # include <grp.h>
 # include <time.h>
 
-# define F_access_fail 1 << 0
-# define F_stat_fail 1 << 2
+# define F_ACCESS_FAIL 1 << 0
+# define F_STAT_FAIL 1 << 2
+# define F_IS_LINK 1 << 3
 
 typedef struct stat	t_stat;
 
@@ -92,6 +93,6 @@ void				free_list(t_indir *curr);
 t_lst				*lst_new(char *file);
 void				put_list(t_indir *list, int size);
 void				put_dlist(t_indir *list, int size, char *name);
-void				put_llist(t_indir *list, int size, int nb_blk);
+void				put_llist(t_indir *list, int size, int nb_blk, char *par_name);
 
 #endif

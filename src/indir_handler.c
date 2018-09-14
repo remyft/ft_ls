@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/12 07:18:47 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/14 06:13:21 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,9 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 	char		*tmp;
 	struct stat	file_stat;
 
-	ret = (t_indir*)malloc(sizeof(t_indir));
+	ret = (t_indir*)ft_memalloc(sizeof(t_indir));
 	ret->name = strdup(name);
 	ret->type = type;
-	ret->next = NULL;
-	ret->prev = NULL;
 	if (g_fg & DATE_SORT || g_fg & LONG_LISTING)
 	{
 		if (name[0] != '/')
@@ -90,31 +88,21 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 	return (ret);
 }
 
-t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
+void	get_stat_indir(t_indir *lst, struct stat file_stat)
 {
-	struct stat		file_stat;
 	struct passwd	*uid;
 	struct group	*gid;
-	char			*tmp;
 
-	if (lst->name[0] != '/')
-	{
-		tmp = ft_strjoin(lst_name, "/");
-		tmp = ft_strjoinfree(tmp, lst->name, 1);
-	}
-	else
-		tmp = lst->name;
-	if ((lstat(tmp, &file_stat)) == -1)
-		return (NULL);
-	free(tmp);
-	if (lst->name[0] != '.' || g_fg & ALL_FILE)
-		par->nb_blk += file_stat.st_blocks;
 	lst->nb_link = file_stat.st_nlink;
 	lst->right = set_right(file_stat.st_mode);
-	uid = getpwuid(file_stat.st_uid);
-	gid = getgrgid(file_stat.st_gid);
-	lst->uid_user = strdup(uid->pw_name);
-	lst->gid_user = strdup(gid->gr_name);
+	if (!(uid = getpwuid(file_stat.st_uid)))
+		lst->uid_user = "root";
+	else
+		lst->uid_user = strdup(uid->pw_name);
+	if (!(gid = getgrgid(file_stat.st_gid)))
+		lst->gid_user = "wheel";
+	else
+		lst->gid_user = strdup(gid->gr_name);
 	lst->size = file_stat.st_size;
 	if (S_ISBLK(file_stat.st_mode) || S_ISCHR(file_stat.st_mode))
 	{
@@ -127,5 +115,28 @@ t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
 		lst->minor = -1;
 	}
 	lst->time = ft_strdup(ctime(&(file_stat.st_mtime)));
+}
+
+t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
+{
+	struct stat		file_stat;
+	char			*tmp;
+
+	if (lst->name[0] != '/')
+	{
+		tmp = ft_strjoin(lst_name, "/");
+		tmp = ft_strjoinfree(tmp, lst->name, 1);
+		if ((lstat(tmp, &file_stat)) == -1)
+			return (NULL);
+		free(tmp);
+	}
+	else
+	{
+		if ((lstat(lst->name, &file_stat)) == -1)
+			return (NULL);
+	}
+	if (lst->name[0] != '.' || g_fg & ALL_FILE)
+		par->nb_blk += file_stat.st_blocks;
+	get_stat_indir(lst, file_stat);
 	return (lst);
 }

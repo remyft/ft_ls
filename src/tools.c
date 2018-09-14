@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/12 08:26:34 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/14 06:57:11 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*get_time(char *file, time_t itime)
 			ret[i] = tmp[i + 4];
 	else
 	{
-		while(++i < 11)
+		while (++i < 11)
 			ret[i] = tmp[i + 13];
 		ret[i++] = ' ';
 	}
@@ -100,7 +100,7 @@ int		str_swap(t_indir *curr)
 	int		tmp_type;
 	int		tmp_itime;
 
-	tmp_name  = curr->name;
+	tmp_name = curr->name;
 	tmp_type = curr->type;
 	tmp_itime = curr->itime;
 	curr->name = curr->next->name;
@@ -114,9 +114,9 @@ int		str_swap(t_indir *curr)
 
 void	sort_alpha(t_indir *names, int size)
 {
-	int i;
-	int continuer;
-	t_indir *curr;
+	int		i;
+	int		continuer;
+	t_indir	*curr;
 
 	continuer = 0;
 	while (!continuer)
@@ -140,9 +140,9 @@ void	sort_alpha(t_indir *names, int size)
 
 void	sort_date(t_indir *names, int size)
 {
-	int i;
-	int continuer;
-	t_indir *curr;
+	int		i;
+	int		continuer;
+	t_indir	*curr;
 
 	continuer = 0;
 	while (!continuer)
@@ -173,44 +173,58 @@ void	ft_putname(char *name)
 	while (name[i])
 		i++;
 	j = 0;
-
 	while (i - j && name[i - j] != '/')
 		j++;
 	j--;
 	ft_putstr_fd(&name[i - j - 1], 2);
 }
 
-void	put_error(int error, t_lst *lst)
+void	put_ferror(int error, t_lst *lst)
 {
-	t_indir		*indir;
+	t_indir *indir;
 
-	lst->nb_blk = 0;
-	if (errno == ENOTDIR)
-	{
+	if (error & F_STAT_FAIL)
+		return ;
+	else if (error & F_IS_LINK)
 		if (g_fg & LONG_LISTING)
 		{
 			indir = set_indir(lst->name, '-', ".");
 			indir = set_stat_indir(indir, ".", lst);
-			put_llist(indir, 1, lst->nb_blk);
-		//	free_list(indir);
+			put_llist(indir, 1, -1, ".");//			free_list(indir);
 		}
 		else
 			ft_putendl(lst->name);
-	}
-	else if (error & F_access_fail && errno == EACCES)
-	{
-		ft_putstr_fd("ft_ls: ", 2);
-		ft_putname(lst->name);
-		ft_putstr_fd(": Permission denied\n", 2);
-	}
-	else if (error & F_stat_fail)
-		return ;
 	else
 	{
 		ft_putstr_fd("ft_ls: ", 2);
 		ft_putname(lst->name);
 		ft_putstr_fd(": No such file or directory\n", 2);
 	}
+}
+
+void	put_error(int error, t_lst *lst)
+{
+	t_indir		*indir;
+
+	if (errno == ENOTDIR)
+	{
+		if (g_fg & LONG_LISTING)
+		{
+			indir = set_indir(lst->name, '-', ".");
+			indir = set_stat_indir(indir, ".", lst);
+			put_llist(indir, 1, -1, ".");//			free_list(indir);
+		}
+		else
+			ft_putendl(lst->name);
+	}
+	else if (error & F_ACCESS_FAIL && errno == EACCES)
+	{
+		ft_putstr_fd("ft_ls: ", 2);
+		ft_putname(lst->name);
+		ft_putstr_fd(": Permission denied\n", 2);
+	}
+	else
+		put_ferror(error, lst);
 	free(lst->name);
 	free(lst);
 }

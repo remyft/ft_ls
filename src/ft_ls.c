@@ -6,54 +6,45 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/12 07:59:37 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/14 06:54:27 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-void	deal_file(t_lst *lst)
+t_indir	*set_list(DIR *dir, int *i, t_lst *lst, t_indir **end)
 {
-	int				i;
-	t_indir			*prev;
+	t_indir			*begin;
 	t_indir			*curr;
-	int				error;
-	DIR				*dir;
+	t_indir			*prev;
 	struct dirent	*indir;
 
-	curr = NULL;
-	lst->nb_blk = 0;
-	error = 1;
-	if (!(dir = opendir((char*)lst->name)))
-		return (put_error(1, lst));
-	i = 0;
-	if ((indir = readdir(dir)))
-	{
-		if (!(lst->indir = set_indir(indir->d_name, indir->d_type, lst->name)))
-			return (put_error(1 << 2, lst));
-		i++;
-	}
+	prev = NULL;
 	while ((indir = readdir(dir)))
 	{
 		if (!(curr = set_indir(indir->d_name, indir->d_type, lst->name)))
-			return (put_error(1 << 2, lst));
-		if (i == 1)
 		{
-			lst->indir->next = curr;
-			curr->prev = lst->indir;
+			return (NULL);
+			put_error(1 << 2, lst);
 		}
+		curr->prev = (*end);
+		if ((*end))
+			(*end)->next = curr;
 		else
-			curr->prev = prev;
-		if (i != 1) 
-			prev->next = curr;
-		prev = curr;
+			begin = curr;
+		(*end) = curr;
 		curr = curr->next;
-		i++;
+		(*i) += 1;
 	}
-	lst->size = i;
-	sort_alpha(lst->indir, i);
+	return (begin);
+}
+
+void	deal_flags(t_lst *lst, t_indir *end, int size)
+{
+	t_indir *curr;
+
 	if (g_fg & DATE_SORT)
-		sort_date(lst->indir, i);
+		sort_date(lst->indir, size);
 	if (g_fg & LONG_LISTING || g_fg & DATE_SORT)
 	{
 		curr = lst->indir;
@@ -64,15 +55,37 @@ void	deal_file(t_lst *lst)
 			curr = curr->next;
 		}
 	}
-	if (g_fg & LONG_LISTING && error)
-		(g_fg & REVERSE) ? put_llist(prev, i, lst->nb_blk) : put_llist(lst->indir, i, lst->nb_blk);
+	if (g_fg & LONG_LISTING)
+		(g_fg & REVERSE) ? put_llist(end, size, lst->nb_blk, lst->name) :
+			put_llist(lst->indir, size, lst->nb_blk, lst->name);
 	else
-		(g_fg & REVERSE) ? put_list(prev, i) : put_list(lst->indir, i);
+		(g_fg & REVERSE) ? put_list(end, size) : put_list(lst->indir, size);
 	if (g_fg & RECURSIVE)
-		(g_fg & REVERSE) ? put_dlist(prev, i, lst->name) : put_dlist(lst->indir, i, lst->name);
+		(g_fg & REVERSE) ? put_dlist(end, size, lst->name) :
+			put_dlist(lst->indir, size, lst->name);
+}
+
+void	deal_file(t_lst *lst)
+{
+	int				i;
+	t_indir			*end;
+	DIR				*dir;
+	char			tmp[256];
+
+	end = NULL;
+	lst->nb_blk = 0;
+	if (!(dir = opendir((char*)lst->name)))
+		return (put_error(1, lst));
+	if (readlink(lst->name, &tmp[0], 32) != -1)
+		return (put_error(F_IS_LINK, lst));
+	i = 0;
+	lst->indir = set_list(dir, &i, lst, &end);
+	lst->size = i;
+	sort_alpha(lst->indir, i);
+	deal_flags(lst, end, lst->size);
 	if (dir)
 		closedir(dir);
-	free_list(lst->indir);
+//	free_list(lst->indir);
 	free(lst->name);
 	free(lst);
 }
@@ -94,16 +107,10 @@ int		main(int ac, char **av)
 			deal_file(file);
 			i++;
 		}
-	else if (ac - i == 1)
-	{
-		file = lst_new(av[i]);
-		deal_file(file);
-	}
 	else
 	{
-		file = lst_new(".");
+		file = (ac - i == 1) ? lst_new(av[i]) : lst_new(".");
 		deal_file(file);
-
 	}
 	return (0);
 }
