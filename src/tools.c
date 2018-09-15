@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/14 06:57:11 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/15 07:38:58 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*get_time(char *file, time_t itime)
 	now = time(&now);
 	tmp = file;
 	tmp[10] = '\0';
-	ret = strcpy(ret, &tmp[4]);
+	ret = ft_strcpy(ret, &tmp[4]);
 	ret[6] = ' ';
 	i = 6;
 	if (now - itime < 15778800 && now - itime >= 0)
@@ -70,9 +70,11 @@ char	*nb_space(char *str, int size)
 	char	*ret;
 
 	i = 0;
-	stsize = ft_strlen(str);
+	stsize = 0;
+	if (str)
+		stsize = ft_strlen(str);
 	ret = malloc(sizeof(char) * (3 + size - stsize));
-	while (i < 2 + size - stsize + 2)
+	while (i < size - stsize + 2)
 		ret[i++] = ' ';
 	ret[i] = '\0';
 	return (ret);
@@ -126,7 +128,7 @@ void	sort_alpha(t_indir *names, int size)
 		curr = names;
 		while (i < size)
 		{
-			if (i + 1 != size && strcmp(curr->name, curr->next->name) > 0)
+			if (i + 1 != size && ft_strcmp(curr->name, curr->next->name) > 0)
 				continuer = str_swap(curr);
 			else
 			{
@@ -190,7 +192,8 @@ void	put_ferror(int error, t_lst *lst)
 		{
 			indir = set_indir(lst->name, '-', ".");
 			indir = set_stat_indir(indir, ".", lst);
-			put_llist(indir, 1, -1, ".");//			free_list(indir);
+			put_llist(indir, 1, -1, ".");
+			free_list(indir);
 		}
 		else
 			ft_putendl(lst->name);
@@ -212,7 +215,12 @@ void	put_error(int error, t_lst *lst)
 		{
 			indir = set_indir(lst->name, '-', ".");
 			indir = set_stat_indir(indir, ".", lst);
-			put_llist(indir, 1, -1, ".");//			free_list(indir);
+			put_llist(indir, 1, -1, ".");
+			free(indir->right);
+			free(indir->uid_user);
+			free(indir->gid_user);
+			free(indir->time);
+			free(indir);
 		}
 		else
 			ft_putendl(lst->name);
@@ -225,6 +233,5 @@ void	put_error(int error, t_lst *lst)
 	}
 	else
 		put_ferror(error, lst);
-	free(lst->name);
 	free(lst);
 }

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:52:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/08 09:23:12 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/15 07:57:44 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void	set_flags(char fl)
 	else if (fl == 't')
 		g_fg |= DATE_SORT;
 	else if (fl == '1')
-		;
+		return ;
+	else if (fl == '-')
+		return ;
 	else
 		put_error_flag(fl);
 }

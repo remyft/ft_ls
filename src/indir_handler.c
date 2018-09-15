@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/14 06:13:21 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/15 07:40:51 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 	struct stat	file_stat;
 
 	ret = (t_indir*)ft_memalloc(sizeof(t_indir));
-	ret->name = strdup(name);
+	ret->name = ft_strdup(name);
 	ret->type = type;
 	if (g_fg & DATE_SORT || g_fg & LONG_LISTING)
 	{
@@ -87,6 +87,7 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 		ret->itime = 0;
 	return (ret);
 }
+#include <stdio.h>
 
 void	get_stat_indir(t_indir *lst, struct stat file_stat)
 {
@@ -96,13 +97,13 @@ void	get_stat_indir(t_indir *lst, struct stat file_stat)
 	lst->nb_link = file_stat.st_nlink;
 	lst->right = set_right(file_stat.st_mode);
 	if (!(uid = getpwuid(file_stat.st_uid)))
-		lst->uid_user = "root";
+		lst->uid_user = ft_strdup("root");
 	else
-		lst->uid_user = strdup(uid->pw_name);
+		lst->uid_user = ft_strdup(uid->pw_name);
 	if (!(gid = getgrgid(file_stat.st_gid)))
-		lst->gid_user = "wheel";
+		lst->gid_user = ft_strdup("wheel");
 	else
-		lst->gid_user = strdup(gid->gr_name);
+		lst->gid_user = ft_strdup(gid->gr_name);
 	lst->size = file_stat.st_size;
 	if (S_ISBLK(file_stat.st_mode) || S_ISCHR(file_stat.st_mode))
 	{

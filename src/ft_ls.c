@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/14 06:54:27 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/15 08:10:41 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,9 @@ void	deal_file(t_lst *lst)
 	deal_flags(lst, end, lst->size);
 	if (dir)
 		closedir(dir);
-//	free_list(lst->indir);
+	while (lst->indir->prev)
+		lst->indir = lst->indir->prev;
+	free_list(lst->indir);
 	free(lst->name);
 	free(lst);
 }
@@ -94,6 +96,7 @@ int		main(int ac, char **av)
 {
 	int		i;
 	t_lst	*file;
+	DIR		*dir;
 
 	i = 1;
 	file = NULL;
@@ -102,9 +105,12 @@ int		main(int ac, char **av)
 	if (ac - i >= 2)
 		while (i < ac)
 		{
-			ft_putend(av[i], ":\n");
+			if ((dir = opendir(av[i])))
+				ft_putend(av[i], ":\n");
 			file = lst_new(av[i]);
 			deal_file(file);
+			if ((dir = opendir(av[i])) && i != ac - 1)
+				ft_putchar('\n');
 			i++;
 		}
 	else
