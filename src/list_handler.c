@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 16:22:58 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 18:13:55 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void		deal_slink(t_indir *list, char *par_name)
 		tmp = ft_strjoinfree(tmp, list->name, 1);
 	}
 	else
-		tmp = list->name;
+		tmp = ft_strdup(list->name);
 	if ((size = readlink(tmp, &buff[0], 256)) != -1)
 	{
 		buff[size] = '\0';

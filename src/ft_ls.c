@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 16:39:28 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 19:37:21 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void	sort_dir(t_lst *list)
 	}
 }
 
-t_lst	*big_deal(t_lst *list)
+void	big_deal(t_lst *list)
 {
 	t_lst	*begin;
 	t_lst	*mid;
@@ -182,11 +182,10 @@ t_lst	*big_deal(t_lst *list)
 			ft_putchar('\n');
 		if (list->size != 1 && begin->isdir == 1)
 			ft_putend(begin->name, ":\n");
+		mid = begin->next;
 		deal_file(begin);
-		mid = begin;
-		begin = begin->next;
+		begin = mid;
 	}
-	return (begin);
 }
 
 void	put_nosuch(t_list *such)
@@ -252,7 +251,7 @@ int		main(int ac, char **av)
 		{
 			if (!(dir = opendir(av[i])) && errno == ENOENT)
 			{
-				nosuch = ft_memalloc(sizeof(t_list));
+				nosuch = (t_list*)ft_memalloc(sizeof(t_list));
 				if (currsuch)
 					currsuch->next = nosuch;
 				if (!(begsuch))
@@ -260,7 +259,6 @@ int		main(int ac, char **av)
 				nosuch->content = ft_strdup(av[i]);
 				currsuch = nosuch;
 				nosuch = nosuch->next;
-				closedir(dir);
 			}
 			else
 			{
@@ -275,12 +273,14 @@ int		main(int ac, char **av)
 				prev = file;
 				file = file->next;
 			}
+			if (dir)
+				closedir(dir);
 			i++;
 		}
 		if (begsuch)
 			sort_such(begsuch);
 		if (begin)
-			file = big_deal(begin);
+			big_deal(begin);
 	}
 	else
 	{

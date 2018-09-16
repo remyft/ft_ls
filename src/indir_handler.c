@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 05:04:42 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 18:00:30 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 			tmp = ft_strjoinfree(tmp, name, 1);
 		}
 		else
-			tmp = name;
+			tmp = strdup(name);
 		if ((lstat(tmp, &file_stat)) == -1)
 			return (NULL);
 		free(tmp);

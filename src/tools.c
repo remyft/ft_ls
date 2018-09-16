@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 10:26:26 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 19:35:40 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,9 +199,15 @@ void	put_ferror(int error, t_lst *lst)
 			if (indir->name && indir->name[0])
 				ft_strdel(&(indir->name));
 			free_list(indir);
+			free(lst->name);
+			free(lst);
 		}
 		else
+		{
 			ft_putendl(lst->name);
+			free(lst->name);
+			free(lst);
+		}
 	}
 }
 
@@ -218,25 +224,31 @@ void	put_error(int error, t_lst *lst)
 			put_llist(indir, 1, -1, ".");
 			if (indir)
 			{
+				free(indir->name);
 				free(indir->right);
 				free(indir->uid_user);
 				free(indir->gid_user);
 				free(indir->time);
 				free(indir);
 			}
+			free(lst->name);
+			free(lst);
 		}
 		else
+		{
 			ft_putendl(lst->name);
+			free(lst->name);
+			free(lst);
+		}
 	}
 	else if (error & F_ACCESS_FAIL && errno == EACCES)
 	{
 		ft_putstr_fd("ft_ls: ", 2);
 		ft_putname(lst->name);
 		ft_putstr_fd(": Permission denied\n", 2);
-		ft_strdel(&(lst->name));
+		free(lst->name);
+		free(lst);
 	}
 	else
 		put_ferror(error, lst);
-	if (lst)
-		ft_memdel((void**)&lst);
 }
