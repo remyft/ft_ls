@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/15 07:40:51 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 05:04:42 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
 		ret->itime = 0;
 	return (ret);
 }
-#include <stdio.h>
 
 void	get_stat_indir(t_indir *lst, struct stat file_stat)
 {

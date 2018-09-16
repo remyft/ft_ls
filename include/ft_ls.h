@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/14 04:46:21 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 15:52:49 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,11 @@ typedef struct		s_lst
 {
 	char			*name;
 	t_indir			*indir;
+	int				isdir;
 	int				size;
 	int				nb_blk;
+	struct s_lst	*next;
+	struct s_lst	*prev;
 }					t_lst;
 
 typedef enum		e_flag
@@ -68,7 +71,7 @@ void				put_error_flag(char fl);
 void				set_flags(char fl);
 void				unset(int flag);
 void				get_flag(char *flags);
-
+void				ft_putname(char *name);
 void				deal_file(t_lst *lst);
 
 int					cmp_file(char *name);
@@ -76,13 +79,14 @@ int					get_mon(char *month);
 char				*get_time(char *file, time_t itime);
 int					max_int(int nb1, int nb2);
 void				max_size(t_indir *lst, int *uid_size, int *gid_size);
-char				*nb_space(char *str, int size);
+char				*nb_space(char *str, int nb, int size);
 int					is_major(t_indir *lst);
 int					str_swap(t_indir *curr);
 void				sort_alpha(t_indir *names, int size);
 void				sort_date(t_indir *names, int size);
 void				ft_putname(char *name);
 void				put_error(int error, t_lst *lst);
+int					nb_len(int nb);
 
 t_indir				*set_indir(char *name, unsigned char type, char *lst_name);
 t_indir				*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par);
@@ -92,7 +96,7 @@ char				*set_right(mode_t file_stat);
 void				free_list(t_indir *curr);
 t_lst				*lst_new(char *file);
 void				put_list(t_indir *list, int size);
-void				put_dlist(t_indir *list, int size, char *name);
+void				put_dlist(t_indir *list, int size, t_lst *par);
 void				put_llist(t_indir *list, int size, int nb_blk, char *par_name);
 
 #endif

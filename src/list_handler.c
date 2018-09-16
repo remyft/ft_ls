@@ -6,12 +6,12 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/15 07:48:49 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 16:22:58 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
-#include <stdio.h>
+
 void		free_list(t_indir *curr)
 {
 	t_indir *prev;
@@ -21,60 +21,92 @@ void		free_list(t_indir *curr)
 		prev = curr->next;
 		if (g_fg & LONG_LISTING)
 		{
-			free(curr->right);
-			free(curr->uid_user);
-			free(curr->gid_user);
-			free(curr->time);
+			ft_strdel(&(curr->right));
+			ft_strdel(&(curr->uid_user));
+			ft_strdel(&(curr->gid_user));
+			ft_strdel(&(curr->time));
 		}
-	//	if (!(cmp_file(curr->name)))
-			free(curr->name);
-		free(curr);
+		ft_strdel(&(curr->name));
+		ft_memdel((void**)&curr);
 		curr = prev;
 	}
 }
 
 t_lst		*lst_new(char *file)
 {
-	t_lst *new;
+	t_lst	*new;
+	DIR		*dir;
 
 	new = ft_memalloc(sizeof(t_lst));
 	new->name = ft_strdup(file);
+	if ((dir = opendir(new->name)))
+		new->isdir = 1;
+	if (dir)
+		closedir(dir);
 	return (new);
 }
 
-int			is_long(t_indir *lst)
+int			nb_len(int nb)
 {
-	while (lst)
+	int i;
+
+	i = 1;
+	while (nb >= 10)
 	{
-		if (lst->size >= 100000)
-			return (1);
-		lst = lst->next;
+		nb /= 10;
+		i++;
 	}
-	return (0);
+	return (i);
 }
 
-static void	deal_llist(t_indir *list, int uid_size, int gid_size)
+int			size_len(t_indir *lst)
+{
+	if (lst->major < 0)
+		return (nb_len(lst->size));
+	else
+		return (nb_len(lst->major) + nb_len(lst->minor) + 3);
+}
+
+int			max_nblen(t_indir *lst)
+{
+	int max;
+	int size;
+
+	max = 0;
+	while (lst)
+	{
+		if (lst->major < 0)
+			max = (size = nb_len(lst->size)) > max ? size : max;
+		else
+			max = (size = nb_len(lst->major) + nb_len(lst->minor) + 3) > max ?
+				size : max;
+		lst = (g_fg & REVERSE ? lst->prev : lst->next);
+	}
+	return (max);
+}
+
+static void	deal_llist(t_indir *list, int uid_size, int gid_size, int max_len)
 {
 	char	*space;
 	char	*time;
 
 	ft_putend(list->right, "  ");
-	ft_putnbr(list->nb_link);
-	ft_putchar('\t');
-	space = nb_space(list->uid_user, uid_size);
+	ft_putnbend(list->nb_link, "\t");
+	space = nb_space(list->uid_user, 0, uid_size);
 	ft_putend(list->uid_user, space);
-	free(space);
-	space = nb_space(list->gid_user, gid_size);
+	ft_strdel(&space);
+	space = nb_space(list->gid_user, 0, gid_size);
 	ft_putend(list->gid_user, space);
-	free(space);
+	ft_strdel(&space);
+	space = nb_space(NULL, size_len(list), max_len);
 	if (list->minor >= 0)
 	{
 		ft_putnbend(list->major, ",  ");
-		ft_putnbend(list->minor, "  ");
+		ft_putnbend(list->minor, space);
 	}
 	else
-		ft_putnbend(list->size, "\t");
-	ft_putchar('\t');
+		ft_putnbend(list->size, space);
+	ft_strdel(&space);
 	time = get_time(list->time, list->itime);
 	ft_putend(time, "  ");
 	free(time);
@@ -111,19 +143,19 @@ void		put_llist(t_indir *list, int size, int nb_blk, char *par_name)
 	uid_size = 0;
 	gid_size = 0;
 	max_size(list, &uid_size, &gid_size);
-	(void)size;
 	if (nb_blk >= 0 && (list->next || list->prev) &&
-			(nb_blk > 0 || g_fg & ALL_FILE || size > 2))
+			(g_fg & ALL_FILE || size > 2))
 	{
 		ft_putstr("total ");
 		ft_putnbr(nb_blk);
 		ft_putchar('\n');
 	}
+	size = max_nblen(list);
 	while (list)
 	{
 		if (!(list->name[0] == '.' && !(g_fg & ALL_FILE)))
 		{
-			deal_llist(list, uid_size, gid_size);
+			deal_llist(list, uid_size, gid_size, size);
 			deal_slink(list, par_name);
 		}
 		list = (g_fg & REVERSE) ? list->prev : list->next;
@@ -142,24 +174,37 @@ void		deal_dlist(t_indir *list, char *name)
 	ft_putend(tmp, ":\n");
 	file = lst_new(tmp);
 	deal_file(file);
-//	free(file->name);
+//	if (file->name[0] && cmp_file(file->name))
+//		free(file->name);
 	free(tmp);
 }
 
-void		put_dlist(t_indir *list, int size, char *name)
+int			get_rec_right(t_indir *list, char *par)
+{
+	struct stat	file_stat;
+	char		*tmp;
+
+	tmp = ft_strdup(par);
+	tmp = ft_strjoinfree(tmp, "/", 1);
+	tmp = ft_strjoinfree(tmp, list->name, 1);
+	if ((lstat(tmp, &file_stat)) == -1)
+			return (0);
+	free(tmp);
+	return (S_ISDIR(file_stat.st_mode));
+}
+
+void		put_dlist(t_indir *list, int size, t_lst *par)
 {
 	int		i;
 
 	i = 0;
-	while (i < size)
+	while (list && i < size)
 	{
 		if (list->name[0] == '.' && !(g_fg & ALL_FILE))
 			list = (g_fg & REVERSE) ? list->prev : list->next;
-		else if ((list->type & DT_DIR ||
-				(g_fg & LONG_LISTING && list->right[0] == 'd')) &&
-				cmp_file(list->name) && !(list->right && list->right[0] != 'b'))
+		else if (cmp_file(list->name) && get_rec_right(list, par->name))
 		{
-			deal_dlist(list, name);
+			deal_dlist(list, par->name);
 			list = (g_fg & REVERSE) ? list->prev : list->next;
 		}
 		else

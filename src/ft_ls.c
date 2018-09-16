@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/15 08:10:41 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 15:53:29 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,10 @@ void	deal_flags(t_lst *lst, t_indir *end, int size)
 	else
 		(g_fg & REVERSE) ? put_list(end, size) : put_list(lst->indir, size);
 	if (g_fg & RECURSIVE)
-		(g_fg & REVERSE) ? put_dlist(end, size, lst->name) :
-			put_dlist(lst->indir, size, lst->name);
+	{
+		(g_fg & REVERSE) ? put_dlist(end, size, lst) :
+			put_dlist(lst->indir, size, lst);
+	}
 }
 
 void	deal_file(t_lst *lst)
@@ -88,31 +90,197 @@ void	deal_file(t_lst *lst)
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
 	free_list(lst->indir);
-	free(lst->name);
-	free(lst);
+	if (lst && lst->name)
+		ft_strdel(&(lst->name));
+	if (lst)
+		ft_memdel((void**)&lst);
+}
+
+void	list_swap(t_lst *curr, t_lst *next)
+{
+	char	*curr_name;
+	int		curr_isdir;
+
+	curr_name = curr->name;
+	curr_isdir = curr->isdir;
+	curr->name = next->name;
+	curr->isdir = next->isdir;
+	next->name = curr_name;
+	next->isdir = curr_isdir;
+}
+
+t_lst	*sort_list(t_lst *list)
+{
+	t_lst	*begin;
+
+	begin = list;
+	while (list->next)
+	{
+		if (list->isdir == 1 && list->next->isdir == 0)
+		{
+			list_swap(list, list->next);
+			list = begin;
+		}
+		else
+			list = list->next;
+	}
+	return (begin);
+}
+
+t_lst	*sort_not_dir(t_lst *list)
+{
+	t_lst *begin;
+
+	begin = list;
+	while (list->next && list->next->isdir == 0)
+	{
+		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) < 0) ||
+				(!(g_fg & REVERSE) &&
+				 ft_strcmp(list->name, list->next->name) > 0))
+		{
+			list_swap(list, list->next);
+			list = begin;
+		}
+		else
+			list = list->next;
+	}
+	return (list->next);
+}
+
+void	sort_dir(t_lst *list)
+{
+	t_lst *begin;
+
+	begin = list;
+	while (list && list->next)
+	{
+		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) > 0) ||
+				(!(g_fg & REVERSE) &&
+				 ft_strcmp(list->name, list->next->name) < 0))
+		{
+			list_swap(list, list->next);
+			list = begin;
+		}
+		else
+			list = list->next;
+	}
+}
+
+t_lst	*big_deal(t_lst *list)
+{
+	t_lst	*begin;
+	t_lst	*mid;
+
+	begin = list;
+	list = begin;
+	list = sort_list(list);
+	mid = sort_not_dir(list);
+	sort_dir(mid);
+	while (begin)
+	{
+		if (begin->prev && begin->isdir == 1)
+			ft_putchar('\n');
+		if (list->size != 1 && begin->isdir == 1)
+			ft_putend(begin->name, ":\n");
+		deal_file(begin);
+		mid = begin;
+		begin = begin->next;
+	}
+	return (begin);
+}
+
+void	put_nosuch(t_list *such)
+{
+	t_list *curr;
+
+	while (such)
+	{
+		curr = such->next;
+		ft_putstr_fd("ft_ls: ", 2);
+		ft_putstr_fd((char*)(such->content), 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		free(such->content);
+		free(such);
+		such = curr;
+	}
+}
+
+void	sort_such(t_list *such)
+{
+	t_list	*begin;
+	char	*tmp;
+
+	begin = such;
+	while (such->next)
+	{
+		if (ft_strcmp((char*)(such->content), (char*)(such->next->content)) > 0)
+		{
+			tmp = such->content;
+			such->content = such->next->content;
+			such->next->content = tmp;
+			such = begin;
+		}
+		else
+			such = such->next;
+	}
+	put_nosuch(begin);
 }
 
 int		main(int ac, char **av)
 {
 	int		i;
 	t_lst	*file;
+	t_lst	*prev;
+	t_lst	*begin;
 	DIR		*dir;
+	t_list	*nosuch;
+	t_list	*begsuch;
+	t_list	*currsuch;
 
 	i = 1;
 	file = NULL;
+	prev = NULL;
+	begin = NULL;
+	nosuch = NULL;
+	begsuch = NULL;
+	currsuch = NULL;
 	while (av[i] && av[i][0] == '-' && ft_strlen(av[i]) >= 2)
 		get_flag(av[i++]);
 	if (ac - i >= 2)
+	{
 		while (i < ac)
 		{
-			if ((dir = opendir(av[i])))
-				ft_putend(av[i], ":\n");
-			file = lst_new(av[i]);
-			deal_file(file);
-			if ((dir = opendir(av[i])) && i != ac - 1)
-				ft_putchar('\n');
+			if (!(dir = opendir(av[i])) && errno == ENOENT)
+			{
+				nosuch = ft_memalloc(sizeof(t_list));
+				if (currsuch)
+					currsuch->next = nosuch;
+				if (!(begsuch))
+					begsuch = nosuch;
+				nosuch->content = ft_strdup(av[i]);
+				currsuch = nosuch;
+				nosuch = nosuch->next;
+			}
+			else
+			{
+				file = lst_new(av[i]);
+				if (!begin)
+					begin = file;
+				if (prev)
+				{
+					file->prev = prev;
+					prev->next = file;
+				}
+				prev = file;
+				file = file->next;
+			}
 			i++;
 		}
+		if (begsuch)
+			sort_such(begsuch);
+		if (begin)
+			file = big_deal(begin);
+	}
 	else
 	{
 		file = (ac - i == 1) ? lst_new(av[i]) : lst_new(".");

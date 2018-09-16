@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/15 07:38:58 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 10:26:26 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	max_size(t_indir *lst, int *uid_size, int *gid_size)
 	}
 }
 
-char	*nb_space(char *str, int size)
+char	*nb_space(char *str, int nb, int size)
 {
 	int		stsize;
 	int		i;
@@ -73,6 +73,8 @@ char	*nb_space(char *str, int size)
 	stsize = 0;
 	if (str)
 		stsize = ft_strlen(str);
+	else
+		stsize = nb;
 	ret = malloc(sizeof(char) * (3 + size - stsize));
 	while (i < size - stsize + 2)
 		ret[i++] = ' ';
@@ -178,7 +180,7 @@ void	ft_putname(char *name)
 	while (i - j && name[i - j] != '/')
 		j++;
 	j--;
-	ft_putstr_fd(&name[i - j - 1], 2);
+	ft_putstr_fd(&name[i - j], 2);
 }
 
 void	put_ferror(int error, t_lst *lst)
@@ -188,20 +190,18 @@ void	put_ferror(int error, t_lst *lst)
 	if (error & F_STAT_FAIL)
 		return ;
 	else if (error & F_IS_LINK)
+	{
 		if (g_fg & LONG_LISTING)
 		{
 			indir = set_indir(lst->name, '-', ".");
 			indir = set_stat_indir(indir, ".", lst);
 			put_llist(indir, 1, -1, ".");
+			if (indir->name && indir->name[0])
+				ft_strdel(&(indir->name));
 			free_list(indir);
 		}
 		else
 			ft_putendl(lst->name);
-	else
-	{
-		ft_putstr_fd("ft_ls: ", 2);
-		ft_putname(lst->name);
-		ft_putstr_fd(": No such file or directory\n", 2);
 	}
 }
 
@@ -216,11 +216,14 @@ void	put_error(int error, t_lst *lst)
 			indir = set_indir(lst->name, '-', ".");
 			indir = set_stat_indir(indir, ".", lst);
 			put_llist(indir, 1, -1, ".");
-			free(indir->right);
-			free(indir->uid_user);
-			free(indir->gid_user);
-			free(indir->time);
-			free(indir);
+			if (indir)
+			{
+				free(indir->right);
+				free(indir->uid_user);
+				free(indir->gid_user);
+				free(indir->time);
+				free(indir);
+			}
 		}
 		else
 			ft_putendl(lst->name);
@@ -230,8 +233,10 @@ void	put_error(int error, t_lst *lst)
 		ft_putstr_fd("ft_ls: ", 2);
 		ft_putname(lst->name);
 		ft_putstr_fd(": Permission denied\n", 2);
+		ft_strdel(&(lst->name));
 	}
 	else
 		put_ferror(error, lst);
-	free(lst);
+	if (lst)
+		ft_memdel((void**)&lst);
 }
