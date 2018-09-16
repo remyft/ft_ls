@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:50:06 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 15:53:29 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/16 16:39:28 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,9 +154,9 @@ void	sort_dir(t_lst *list)
 	begin = list;
 	while (list && list->next)
 	{
-		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) > 0) ||
+		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) < 0) ||
 				(!(g_fg & REVERSE) &&
-				 ft_strcmp(list->name, list->next->name) < 0))
+				 ft_strcmp(list->name, list->next->name) > 0))
 		{
 			list_swap(list, list->next);
 			list = begin;
@@ -260,6 +260,7 @@ int		main(int ac, char **av)
 				nosuch->content = ft_strdup(av[i]);
 				currsuch = nosuch;
 				nosuch = nosuch->next;
+				closedir(dir);
 			}
 			else
 			{
