@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 18:00:30 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/18 00:58:47 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,11 @@ void	get_stat_indir(t_indir *lst, struct stat file_stat)
 	lst->nb_link = file_stat.st_nlink;
 	lst->right = set_right(file_stat.st_mode);
 	if (!(uid = getpwuid(file_stat.st_uid)))
-		lst->uid_user = ft_strdup("root");
+		lst->uid_user = ft_itoa(file_stat.st_uid);
 	else
 		lst->uid_user = ft_strdup(uid->pw_name);
 	if (!(gid = getgrgid(file_stat.st_gid)))
-		lst->gid_user = ft_strdup("wheel");
+		lst->gid_user = ft_itoa(file_stat.st_gid);
 	else
 		lst->gid_user = ft_strdup(gid->gr_name);
 	lst->size = file_stat.st_size;

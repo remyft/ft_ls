@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 15:52:49 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/18 03:05:24 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct		s_indir
 	int				major;
 	int				minor;
 	char			*time;
-	int				itime;
+	time_t			itime;
 	struct s_indir	*next;
 	struct s_indir	*prev;
 }					t_indir;
@@ -62,7 +62,8 @@ typedef enum		e_flag
 	LONG_LISTING = 1 << 1,	//-l
 	ALL_FILE = 1 << 2,		//-a
 	REVERSE = 1 << 3,		//-r
-	DATE_SORT = 1 << 4		//-t
+	DATE_SORT = 1 << 4,		//-t
+	LONG_T = 1 << 5		//-T
 }					t_fg;
 
 t_fg				g_fg;
@@ -95,6 +96,11 @@ char				*set_right(mode_t file_stat);
 
 void				free_list(t_indir *curr);
 t_lst				*lst_new(char *file);
+void				deal_dlist(t_indir *list, char *name);
+void				deal_llist(t_indir *list, int uid_size, int gid_size,
+		int max_len);
+void	deal_slink(t_indir *list, char *par_name);
+
 void				put_list(t_indir *list, int size);
 void				put_dlist(t_indir *list, int size, t_lst *par);
 void				put_llist(t_indir *list, int size, int nb_blk, char *par_name);

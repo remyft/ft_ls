@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 23:07:03 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/08 07:32:13 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/18 01:48:42 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,4 +114,5 @@ int					get_next_line(int fd, char **line);
 int					ft_abs(int n);
 void				ft_putend(char *str, char *end);
 void				ft_putnbend(int nb, char *str);
+void				ft_putendnb(char *str, int nb);
 #endif

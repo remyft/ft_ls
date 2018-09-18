@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:52:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/16 18:13:59 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/18 02:58:26 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	set_flags(char fl)
 		g_fg |= REVERSE;
 	else if (fl == 't')
 		g_fg |= DATE_SORT;
-	else if (fl == '1')
+	else if (fl == '1' || fl == '-')
 		return ;
-	else if (fl == '-')
-		return ;
+	else if (fl == 'T')
+		g_fg |= LONG_T;
 	else
 		put_error_flag(fl);
 }
@@ -58,4 +58,3 @@ void	unset(int flag)
 	if (g_fg & flag)
 		g_fg &= ~flag;
 }
-
