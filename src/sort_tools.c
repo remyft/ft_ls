@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:13:14 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/18 03:18:11 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/19 17:32:38 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,16 @@ t_lst	*sort_list(t_lst *list)
 	return (begin);
 }
 
-t_lst	*sort_not_dir(t_lst *list)
+t_lst	*sort_not_dir(t_lst *list, t_fg *g_fg)
 {
 	t_lst *begin;
 
 	begin = list;
 	while (list->next && list->next->isdir == 0)
 	{
-		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) < 0) ||
-				(!(g_fg & REVERSE) &&
+		if (((*g_fg) & REVERSE &&
+			ft_strcmp(list->name, list->next->name) < 0) ||
+				(!((*g_fg) & REVERSE) &&
 					ft_strcmp(list->name, list->next->name) > 0))
 		{
 			list_swap(list, list->next);
@@ -99,18 +100,22 @@ t_lst	*sort_not_dir(t_lst *list)
 		else
 			list = list->next;
 	}
-	return (list->next);
+	if (begin->isdir == 0)
+		return (list->next);
+	else
+		return (list);
 }
 
-void	sort_dir(t_lst *list)
+void	sort_dir(t_lst *list, t_fg *g_fg)
 {
 	t_lst *begin;
 
 	begin = list;
 	while (list && list->next)
 	{
-		if ((g_fg & REVERSE && ft_strcmp(list->name, list->next->name) < 0) ||
-				(!(g_fg & REVERSE) &&
+		if (((*g_fg) & REVERSE &&
+			ft_strcmp(list->name, list->next->name) < 0) ||
+				(!((*g_fg) & REVERSE) &&
 					ft_strcmp(list->name, list->next->name) > 0))
 		{
 			list_swap(list, list->next);

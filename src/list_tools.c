@@ -6,13 +6,13 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/18 03:22:57 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/19 14:53:12 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-int		max_nblen(t_indir *lst)
+int		max_nblen(t_indir *lst, t_fg *g_fg)
 {
 	int max;
 	int size;
@@ -30,7 +30,7 @@ int		max_nblen(t_indir *lst)
 			if ((size = nb_len(lst->major) + nb_len(lst->minor) + 3) > max)
 				max = size;
 		}
-		lst = (g_fg & REVERSE ? lst->prev : lst->next);
+		lst = (*g_fg & REVERSE ? lst->prev : lst->next);
 	}
 	return (max);
 }
@@ -49,7 +49,7 @@ int		get_rec_right(t_indir *list, char *par)
 	return (S_ISDIR(file_stat.st_mode));
 }
 
-void	deal_dlist(t_indir *list, char *name)
+void	deal_dlist(t_indir *list, char *name, t_fg *g_fg)
 {
 	char	*tmp;
 	t_lst	*file;
@@ -63,23 +63,23 @@ void	deal_dlist(t_indir *list, char *name)
 	else
 		ft_putend(tmp, ":\n");
 	file = lst_new(tmp);
-	deal_file(file);
+	deal_file(file, g_fg);
 	free(file->name);
 	free(file);
 	free(tmp);
 }
 
-void	deal_llist(t_indir *list, int uid_size, int gid_size, int max_len)
+void	deal_llist(t_indir *list, t_dbl ug_size, int max_len, t_fg *g_fg)
 {
 	char	*space;
 	char	*time;
 
 	ft_putend(list->right, "  ");
 	ft_putnbend(list->nb_link, "\t");
-	space = nb_space(list->uid_user, 0, uid_size);
+	space = nb_space(list->uid_user, 0, ug_size.x);
 	ft_putend(list->uid_user, space);
 	ft_strdel(&space);
-	space = nb_space(list->gid_user, 0, gid_size);
+	space = nb_space(list->gid_user, 0, ug_size.y);
 	ft_putend(list->gid_user, space);
 	ft_strdel(&space);
 	space = nb_space(NULL, size_len(list), max_len);
@@ -93,7 +93,7 @@ void	deal_llist(t_indir *list, int uid_size, int gid_size, int max_len)
 	ft_putchar(' ');
 	ft_strdel(&space);
 	time = get_time(list->time, list->itime);
-	g_fg & LONG_T ? ft_putend(&(list->time[4]), " ") : ft_putend(time, " ");
+	(*g_fg) & LONG_T ? ft_putend(&(list->time[4]), " ") : ft_putend(time, " ");
 	free(time);
 	ft_putstr(list->name);
 }

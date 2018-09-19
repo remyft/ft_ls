@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/18 00:58:47 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/19 20:18:40 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,34 +60,6 @@ char	*set_right(mode_t file_stat)
 	return (tab);
 }
 
-t_indir	*set_indir(char *name, unsigned char type, char *lst_name)
-{
-	t_indir		*ret;
-	char		*tmp;
-	struct stat	file_stat;
-
-	ret = (t_indir*)ft_memalloc(sizeof(t_indir));
-	ret->name = ft_strdup(name);
-	ret->type = type;
-	if (g_fg & DATE_SORT || g_fg & LONG_LISTING)
-	{
-		if (name[0] != '/')
-		{
-			tmp = ft_strjoin(lst_name, "/");
-			tmp = ft_strjoinfree(tmp, name, 1);
-		}
-		else
-			tmp = strdup(name);
-		if ((lstat(tmp, &file_stat)) == -1)
-			return (NULL);
-		free(tmp);
-		ret->itime = file_stat.st_mtime;
-	}
-	else
-		ret->itime = 0;
-	return (ret);
-}
-
 void	get_stat_indir(t_indir *lst, struct stat file_stat)
 {
 	struct passwd	*uid;
@@ -117,7 +89,33 @@ void	get_stat_indir(t_indir *lst, struct stat file_stat)
 	lst->time = ft_strdup(ctime(&(file_stat.st_mtime)));
 }
 
-t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
+t_indir	*set_indir(char *name, unsigned char type, t_lst *par, t_fg *g_fg)
+{
+	t_indir		*ret;
+	char		*tmp;
+	struct stat	file_stat;
+
+	ret = (t_indir*)ft_memalloc(sizeof(t_indir));
+	ret->name = ft_strdup(name);
+	ret->type = type;
+	if (name[0] != '/')
+	{
+		tmp = ft_strjoin(par->name, "/");
+		tmp = ft_strjoinfree(tmp, name, 1);
+	}
+	else
+		tmp = strdup(name);
+	if ((lstat(tmp, &file_stat)) == -1)
+		return (NULL);
+	free(tmp);
+	ret->itime = file_stat.st_mtime;
+	if (name[0] != '.' || *g_fg & ALL_FILE)
+		par->nb_blk += file_stat.st_blocks;
+	get_stat_indir(ret, file_stat);
+	return (ret);
+}
+
+t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par, t_fg *g_fg)
 {
 	struct stat		file_stat;
 	char			*tmp;
@@ -126,16 +124,17 @@ t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par)
 	{
 		tmp = ft_strjoin(lst_name, "/");
 		tmp = ft_strjoinfree(tmp, lst->name, 1);
-		if ((lstat(tmp, &file_stat)) == -1)
-			return (NULL);
-		free(tmp);
+		ft_putend(tmp, ": ftg2\n");
 	}
 	else
+		tmp = ft_strdup(lst->name);
+	if ((lstat(tmp, &file_stat)) == -1)
 	{
-		if ((lstat(lst->name, &file_stat)) == -1)
-			return (NULL);
+		ft_putendl("WHYYY");
+		return (NULL);
 	}
-	if (lst->name[0] != '.' || g_fg & ALL_FILE)
+	free(tmp);
+	if (lst->name[0] != '.' || *g_fg & ALL_FILE)
 		par->nb_blk += file_stat.st_blocks;
 	get_stat_indir(lst, file_stat);
 	return (lst);

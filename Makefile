@@ -6,7 +6,7 @@
 #    By: dbaffier <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/05 13:53:00 by dbaffier          #+#    #+#              #
-#    Updated: 2018/09/17 21:17:07 by rfontain         ###   ########.fr        #
+#    Updated: 2018/09/19 02:01:32 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,11 @@ SRCS =	src/ft_ls.c			\
 		src/indir_handler.c	\
 		src/list_handler.c	\
 		src/utiles.c		\
+		src/deal.c			\
+		src/file_tools.c	\
+		src/list_tools.c	\
+		src/sort_tools.c	\
+		src/list_utiles.c	\
 
 OK =      $(GREEN)[OK]$(RESET)		
 

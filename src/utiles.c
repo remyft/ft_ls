@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/18 03:23:18 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/19 13:39:06 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,20 @@ void	ft_putname(char *name)
 		j++;
 	j--;
 	ft_putstr_fd(&name[i - j], 2);
+}
+
+int		len_list(t_indir *list)
+{
+	t_indir	*curr;
+	int		i;
+
+	i = 0;
+	curr = list;
+	while (curr)
+	{
+		if (curr->name[0] != '.')
+			i++;
+		curr = curr->next;
+	}
+	return (i);
 }
