@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 20:17:16 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 12:06:39 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct		s_lst
 	int				isdir;
 	int				size;
 	int				nb_blk;
-	t_fg			g_fg;
+	t_fg			*g_fg;
 	struct s_lst	*next;
 	struct s_lst	*prev;
 }					t_lst;
@@ -93,8 +93,8 @@ int					is_major(t_indir *lst);
 void				put_nosuch(t_list *such);
 void				deal_solo(int i, int ac, char **av, t_fg *g_fg);
 int					str_swap(t_indir *curr);
-void				put_ferror(int error, t_lst *lst, t_fg *g_fg);
-void				put_error(int error, t_lst *lst, t_fg *g_fg);
+void				put_ferror(int error, t_lst *lst);
+void				put_error(int error, t_lst *lst);
 
 void				sort_alpha(t_indir *names, int size);
 void				sort_date(t_indir *names, int size);
@@ -108,7 +108,7 @@ int					size_len(t_indir *lst);
 int					len_list(t_indir *list);
 int					max_int(int nb1, int nb2);
 
-t_indir				*set_indir(char *name, unsigned char type, t_lst *par, t_fg *g_fg);
+t_indir				*set_indir(char *name, unsigned char type, t_lst *par, char *lst_name);
 t_indir				*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par,
 		t_fg *g_fg);
 char				set_type(mode_t file_stat);
@@ -121,7 +121,7 @@ void				deal_llist(t_indir *list, t_dbl ug_size, int max_len,
 		t_fg *g_fg);
 void				deal_slink(t_indir *list, char *par_name);
 
-t_indir				*set_list(int *i, t_lst *lst, t_indir **end, t_fg *g_fg);
+t_indir				*set_list(int *i, t_lst *lst, t_indir **end);
 void				list_swap(t_lst *curr, t_lst *next);
 t_list				*fill_such(t_list **begsuch, t_list *currsuch, char **av,
 		int i);

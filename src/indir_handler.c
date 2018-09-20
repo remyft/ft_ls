@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 20:18:40 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 15:32:18 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	get_stat_indir(t_indir *lst, struct stat file_stat)
 	lst->time = ft_strdup(ctime(&(file_stat.st_mtime)));
 }
 
-t_indir	*set_indir(char *name, unsigned char type, t_lst *par, t_fg *g_fg)
+t_indir	*set_indir(char *name, unsigned char type, t_lst *par, char *lst_name)
 {
 	t_indir		*ret;
 	char		*tmp;
@@ -100,16 +100,19 @@ t_indir	*set_indir(char *name, unsigned char type, t_lst *par, t_fg *g_fg)
 	ret->type = type;
 	if (name[0] != '/')
 	{
-		tmp = ft_strjoin(par->name, "/");
+		tmp = ft_strjoin(lst_name, "/");
 		tmp = ft_strjoinfree(tmp, name, 1);
 	}
 	else
 		tmp = strdup(name);
 	if ((lstat(tmp, &file_stat)) == -1)
+	{
+		free(tmp);
 		return (NULL);
+	}
 	free(tmp);
 	ret->itime = file_stat.st_mtime;
-	if (name[0] != '.' || *g_fg & ALL_FILE)
+	if (name[0] != '.' || *(par->g_fg) & ALL_FILE)
 		par->nb_blk += file_stat.st_blocks;
 	get_stat_indir(ret, file_stat);
 	return (ret);

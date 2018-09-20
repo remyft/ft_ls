@@ -6,13 +6,13 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:20:29 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 20:16:50 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 16:00:04 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-t_indir	*set_list(int *i, t_lst *lst, t_indir **end, t_fg *g_fg)
+t_indir	*set_list(int *i, t_lst *lst, t_indir **end)
 {
 	t_indir			*begin;
 	t_indir			*curr;
@@ -23,10 +23,9 @@ t_indir	*set_list(int *i, t_lst *lst, t_indir **end, t_fg *g_fg)
 	prev = NULL;
 	if (!(dir = opendir(lst->name)))
 		return (NULL);
-//	ft_putendl(lst->name);
 	while ((indir = readdir(dir)))
 	{
-		if (!(curr = set_indir(indir->d_name, indir->d_type, lst, g_fg)))
+		if (!(curr = set_indir(indir->d_name, indir->d_type, lst, lst->name)))
 			return (NULL);
 		curr->prev = (*end);
 		if ((*end))

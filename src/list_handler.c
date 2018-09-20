@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 13:38:01 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 15:59:07 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@ void		free_list(t_indir *curr, t_fg *g_fg)
 {
 	t_indir *next;
 
+	(void)g_fg;
 	while (curr)
 	{
 		next = curr->next;
-		if (*g_fg & LONG_LISTING)
-		{
-			ft_strdel(&(curr->right));
-			ft_strdel(&(curr->uid_user));
-			ft_strdel(&(curr->gid_user));
-			ft_strdel(&(curr->time));
-		}
+		ft_strdel(&(curr->right));
+		ft_strdel(&(curr->uid_user));
+		ft_strdel(&(curr->gid_user));
+		ft_strdel(&(curr->time));
 		ft_strdel(&(curr->name));
 		ft_memdel((void**)&curr);
 		curr = next;

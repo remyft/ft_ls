@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 18:44:48 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 15:58:43 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int		str_swap(t_indir *curr)
 	return (0);
 }
 
-void	put_ferror(int error, t_lst *lst, t_fg *g_fg)
+void	put_ferror(int error, t_lst *lst)
 {
 	t_indir *indir;
 
@@ -77,33 +77,29 @@ void	put_ferror(int error, t_lst *lst, t_fg *g_fg)
 		return ;
 	else if (error & F_IS_LINK)
 	{
-		if ((*g_fg) & LONG_LISTING)
+		if (*(lst->g_fg) & LONG_LISTING)
 		{
-			indir = set_indir(lst->name, '-', ".");
-			indir = set_stat_indir(indir, ".", lst, g_fg);
-			put_llist(indir, -1, lst, g_fg);
-			if (indir->name && indir->name[0])
-				ft_strdel(&(indir->name));
-			free_list(indir, g_fg);
+			indir = set_indir(lst->name, '-', lst,  ".");
+			put_llist(indir, -1, lst, lst->g_fg);
+			free_list(indir, lst->g_fg);
 		}
 		else
 			ft_putendl(lst->name);
 	}
 }
 
-void	put_error(int error, t_lst *lst, t_fg *g_fg)
+void	put_error(int error, t_lst *lst)
 {
 	t_indir		*indir;
 
 	if (errno == ENOTDIR)
 	{
-		if ((*g_fg) & LONG_LISTING)
+		if (*(lst->g_fg) & LONG_LISTING)
 		{
-			indir = set_indir(lst->name, '-', ".");
-			indir = set_stat_indir(indir, ".", lst, g_fg);
-			put_llist(indir, -1, lst, g_fg);
+			indir = set_indir(lst->name, '-', lst, ".");
+			put_llist(indir, -1, lst, lst->g_fg);
 			if (indir)
-				free_list(indir, g_fg);
+				free_list(indir, lst->g_fg);
 		}
 		else
 			ft_putendl(lst->name);
@@ -115,5 +111,5 @@ void	put_error(int error, t_lst *lst, t_fg *g_fg)
 		ft_putstr_fd(": Permission denied\n", 2);
 	}
 	else
-		put_ferror(error, lst, g_fg);
+		put_ferror(error, lst);
 }

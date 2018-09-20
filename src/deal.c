@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 20:17:29 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/20 15:58:58 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,8 @@
 
 void	deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg)
 {
-//	t_indir *curr;
-//	t_indir *test;
-
 	if (*g_fg & DATE_SORT)
 		sort_date(lst->indir, size);
-	/*if (*g_fg & LONG_LISTING || *g_fg & DATE_SORT)
-	{
-		curr = lst->indir;
-		test = lst->indir;
-		while (curr)
-		{
-			if (!(curr = set_stat_indir(curr, lst->name, lst, g_fg)))
-			{
-				//ft_putend(test->name, " : bug\n");
-				return(put_error(F_STAT_FAIL, lst, g_fg));
-			}
-			test = test->next;
-			curr = curr->next;
-		}
-	}*/
 	if (*g_fg & LONG_LISTING)
 		(*g_fg & REVERSE) ? put_llist(end, lst->nb_blk, lst, g_fg) :
 			put_llist(lst->indir, lst->nb_blk, lst, g_fg);
@@ -54,15 +36,16 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 
 	end = NULL;
 	lst->nb_blk = 0;
+	lst->g_fg = g_fg;
 	if (!(dir = opendir((char*)lst->name)))
-		return (put_error(1, lst, g_fg));
+		return (put_error(1, lst));
 	if (dir)
 		closedir(dir);
 	if (readlink(lst->name, &tmp[0], 256) != -1)
-		return (put_error(F_IS_LINK, lst, g_fg));
+		return (put_error(F_IS_LINK, lst));
 	i = 0;
-	if (!(lst->indir = set_list(&i, lst, &end, g_fg)))
-		return (put_error(1 << 2, lst, g_fg));
+	if (!(lst->indir = set_list(&i, lst, &end)))
+		return (put_error(1 << 2, lst));
 	lst->size = i;
 	sort_alpha(lst->indir, i);
 	deal_flags(lst, end, lst->size, g_fg);
