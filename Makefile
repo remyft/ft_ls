@@ -6,7 +6,7 @@
 #    By: dbaffier <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/05 13:53:00 by dbaffier          #+#    #+#              #
-#    Updated: 2018/09/20 14:55:30 by rfontain         ###   ########.fr        #
+#    Updated: 2018/09/23 01:50:29 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ SRCS =	src/ft_ls.c			\
 		src/list_tools.c	\
 		src/sort_tools.c	\
 		src/list_utiles.c	\
+		src/random.c		\
 
 OK =      $(GREEN)[OK]$(RESET)		
 

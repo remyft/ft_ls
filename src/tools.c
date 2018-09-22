@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/20 15:58:43 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/23 01:48:24 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 
 	if (!(dir = opendir(av[i])) && errno == ENOENT)
 	{
-		nosuch = (t_list*)ft_memalloc(sizeof(t_list));
-		nosuch->content = ft_strdup(av[i]);
+		if (!(nosuch = (t_list*)ft_memalloc(sizeof(t_list))))
+			exit(2);
+		assign_char((char**)&(nosuch->content), av[i]);
 		deal_such(nosuch);
 	}
 	else
@@ -51,21 +52,21 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 		closedir(dir);
 }
 
-int		str_swap(t_indir *curr)
+int		str_swap(t_indir *one, t_indir *two)
 {
-	char	*tmp_name;
-	int		tmp_type;
-	int		tmp_itime;
+	t_indir *tmp_prev;
+	t_indir *tmp_next;
 
-	tmp_name = curr->name;
-	tmp_type = curr->type;
-	tmp_itime = curr->itime;
-	curr->name = curr->next->name;
-	curr->type = curr->next->type;
-	curr->itime = curr->next->itime;
-	curr->next->name = tmp_name;
-	curr->next->type = tmp_type;
-	curr->next->itime = tmp_itime;
+	tmp_prev = one->prev;
+	tmp_next = two->next;
+	one->prev = two;
+	one->next = tmp_next;
+	two->next = one;
+	two->prev = tmp_prev;
+	if (one->next)
+		one->next->prev = one;
+	if (two->prev)
+		two->prev->next = two;
 	return (0);
 }
 
@@ -79,24 +80,35 @@ void	put_ferror(int error, t_lst *lst)
 	{
 		if (*(lst->g_fg) & LONG_LISTING)
 		{
-			indir = set_indir(lst->name, '-', lst,  ".");
+			indir = set_indir(lst->name, '-');
+			if (!(indir = set_stat_indir(&indir, indir, lst, ".")))
+			{
+				free(indir->name);
+				free(indir);
+				return ;
+			}
 			put_llist(indir, -1, lst, lst->g_fg);
-			free_list(indir, lst->g_fg);
+			if (indir)
+				free_list(indir, lst->g_fg);
 		}
 		else
 			ft_putendl(lst->name);
 	}
 }
 
-void	put_error(int error, t_lst *lst)
+void	put_error(int error, t_lst *lst, DIR *dir)
 {
 	t_indir		*indir;
 
+	if (dir)
+		closedir(dir);
 	if (errno == ENOTDIR)
 	{
 		if (*(lst->g_fg) & LONG_LISTING)
 		{
-			indir = set_indir(lst->name, '-', lst, ".");
+			indir = set_indir(lst->name, '-');
+			if (!(indir = set_stat_indir(&indir, indir, lst, ".")))
+				return (free_list(indir, lst->g_fg));
 			put_llist(indir, -1, lst, lst->g_fg);
 			if (indir)
 				free_list(indir, lst->g_fg);

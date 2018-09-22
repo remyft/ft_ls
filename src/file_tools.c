@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:11:04 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 13:53:05 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/22 21:06:29 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,27 @@ char	*get_time(char *file, time_t itime)
 {
 	time_t	now;
 	char	*ret;
-	char	*tmp;
 	int		i;
 
-	ret = (char*)malloc(sizeof(char) * 13);
+	if (!(ret = (char*)malloc(sizeof(char) * 13)))
+		exit(2);
 	now = time(&now);
-	tmp = file;
-	tmp[10] = '\0';
-	ret = ft_strcpy(ret, &tmp[4]);
+	file[10] = '\0';
+	ret = ft_strcpy(ret, &file[4]);
 	ret[6] = ' ';
 	i = 6;
 	if (now - itime < 15778800 && now - itime >= 0)
 		while (++i < 12)
-			ret[i] = tmp[i + 4];
+			ret[i] = file[i + 4];
 	else
 	{
 		while (++i < 11)
-			ret[i] = tmp[i + 13];
+			ret[i] = file[i + 13];
 		ret[i++] = ' ';
 	}
 	ret[i] = '\0';
-	tmp[10] = ' ';
-	tmp[24] = '\0';
+	file[10] = ' ';
+	file[24] = '\0';
 	return (ret);
 }
 
@@ -72,7 +71,8 @@ char	*nb_space(char *str, int nb, int size)
 		stsize = ft_strlen(str);
 	else
 		stsize = nb;
-	ret = malloc(sizeof(char) * (2 + size - stsize));
+	if (!(ret = malloc(sizeof(char) * (2 + size - stsize))))
+		exit(2);
 	while (i < size - stsize + 1)
 		ret[i++] = ' ';
 	ret[i] = '\0';

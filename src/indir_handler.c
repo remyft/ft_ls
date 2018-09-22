@@ -6,13 +6,13 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/20 15:32:18 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/23 01:30:15 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-char	set_type(mode_t file_stat)
+static char	set_type(mode_t file_stat)
 {
 	if (S_ISREG(file_stat))
 		return ('-');
@@ -32,11 +32,12 @@ char	set_type(mode_t file_stat)
 		return ('?');
 }
 
-char	*set_right(mode_t file_stat)
+char		*set_right(mode_t file_stat)
 {
 	char *tab;
 
-	tab = (char*)malloc(sizeof(char) * 11);
+	if (!(tab = (char*)malloc(sizeof(char) * 11)))
+		return (NULL);
 	tab[0] = set_type(file_stat);
 	tab[1] = file_stat & S_IRUSR ? 'r' : '-';
 	tab[2] = file_stat & S_IWUSR ? 'w' : '-';
@@ -60,85 +61,99 @@ char	*set_right(mode_t file_stat)
 	return (tab);
 }
 
-void	get_stat_indir(t_indir *lst, struct stat file_stat)
+static void	get_stat_indir(t_indir *lst, struct stat file_stat)
 {
 	struct passwd	*uid;
 	struct group	*gid;
 
 	lst->nb_link = file_stat.st_nlink;
-	lst->right = set_right(file_stat.st_mode);
+	if (!(lst->right = set_right(file_stat.st_mode)))
+		exit(2);
 	if (!(uid = getpwuid(file_stat.st_uid)))
 		lst->uid_user = ft_itoa(file_stat.st_uid);
 	else
 		lst->uid_user = ft_strdup(uid->pw_name);
+	if (!(lst->uid_user))
+		exit(2);
 	if (!(gid = getgrgid(file_stat.st_gid)))
 		lst->gid_user = ft_itoa(file_stat.st_gid);
 	else
 		lst->gid_user = ft_strdup(gid->gr_name);
+	if (!(lst->gid_user))
+		exit(2);
 	lst->size = file_stat.st_size;
 	if (S_ISBLK(file_stat.st_mode) || S_ISCHR(file_stat.st_mode))
-	{
-		lst->major = major(file_stat.st_rdev);
-		lst->minor = minor(file_stat.st_rdev);
-	}
+		double_int(&(lst->major), &(lst->minor),
+				major(file_stat.st_rdev), minor(file_stat.st_rdev));
 	else
-	{
-		lst->major = -1;
-		lst->minor = -1;
-	}
-	lst->time = ft_strdup(ctime(&(file_stat.st_mtime)));
+		double_int((&lst->major), &(lst->minor), -1, -1);
+	assign_char(&(lst->time), ctime(&(file_stat.st_mtime)));
 }
 
-t_indir	*set_indir(char *name, unsigned char type, t_lst *par, char *lst_name)
+t_indir		*set_indir(char *name, unsigned char type)
 {
 	t_indir		*ret;
-	char		*tmp;
-	struct stat	file_stat;
 
-	ret = (t_indir*)ft_memalloc(sizeof(t_indir));
-	ret->name = ft_strdup(name);
+	if (!(ret = (t_indir*)ft_memalloc(sizeof(t_indir))))
+		exit(2);
+	assign_char(&(ret->name), name);
 	ret->type = type;
-	if (name[0] != '/')
-	{
-		tmp = ft_strjoin(lst_name, "/");
-		tmp = ft_strjoinfree(tmp, name, 1);
-	}
-	else
-		tmp = strdup(name);
-	if ((lstat(tmp, &file_stat)) == -1)
-	{
-		free(tmp);
-		return (NULL);
-	}
-	free(tmp);
-	ret->itime = file_stat.st_mtime;
-	if (name[0] != '.' || *(par->g_fg) & ALL_FILE)
-		par->nb_blk += file_stat.st_blocks;
-	get_stat_indir(ret, file_stat);
 	return (ret);
 }
 
-t_indir	*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par, t_fg *g_fg)
+void		stat_fail(t_indir **lst, t_indir **begin, t_lst *par)
 {
-	struct stat		file_stat;
-	char			*tmp;
+	t_indir *l_tmp;
 
-	if (lst->name[0] != '/')
+	if ((*lst)->next)
 	{
-		tmp = ft_strjoin(lst_name, "/");
-		tmp = ft_strjoinfree(tmp, lst->name, 1);
-		ft_putend(tmp, ": ftg2\n");
+		l_tmp = (*lst)->next->next;
+		(*lst) = (*lst)->next;
+		(*lst)->next = l_tmp;
+		if ((*lst)->prev->prev)
+			(*lst)->prev->prev->next = (*lst);
+		l_tmp = (*lst)->prev->prev;
+		ft_strdel(&((*lst)->prev->name));
+		ft_memdel((void**)&((*lst)->prev));
+		(*lst)->prev = l_tmp;
 	}
 	else
-		tmp = ft_strdup(lst->name);
-	if ((lstat(tmp, &file_stat)) == -1)
 	{
-		ft_putendl("WHYYY");
-		return (NULL);
+		if ((*lst)->prev)
+			(*lst)->prev->next = NULL;
+		else
+			(*begin) = NULL;
+		ft_strdel(&((*lst)->name));
+		ft_memdel((void**)lst);
 	}
-	free(tmp);
-	if (lst->name[0] != '.' || *g_fg & ALL_FILE)
-		par->nb_blk += file_stat.st_blocks;
-	get_stat_indir(lst, file_stat);
-	return (lst);
+	par->size -= 1;
+}
+
+t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par, char *par_name)
+{
+	char *tmp;
+	t_stat	stat;
+
+	while ((*lst))
+	{
+		if ((*lst)->name[0] != '/')
+		{
+			join_char(&tmp, par_name, "/", 0);
+			join_char(&tmp, tmp, (*lst)->name, 1);
+		}
+		else
+			assign_char(&tmp, (*lst)->name);
+		if ((lstat(tmp, &stat)) == -1)
+			stat_fail(lst, &begin, par);
+		else
+		{
+			(*lst)->itime = stat.st_mtime;
+			par->nb_blk += ((*lst)->name[0] != '.' || *(par->g_fg) & ALL_FILE) ?
+				stat.st_blocks : 0;
+			get_stat_indir((*lst), stat);
+			(*lst) = (*lst)->next;
+		}
+		free(tmp);
+	}
+	return (begin);
 }

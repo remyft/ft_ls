@@ -6,27 +6,27 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:20:29 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/20 16:00:04 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/23 01:17:13 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-t_indir	*set_list(int *i, t_lst *lst, t_indir **end)
+t_indir	*set_list(int *i, t_indir **end, DIR *dir)
 {
 	t_indir			*begin;
 	t_indir			*curr;
 	t_indir			*prev;
 	struct dirent	*indir;
-	DIR				*dir;
 
 	prev = NULL;
-	if (!(dir = opendir(lst->name)))
-		return (NULL);
 	while ((indir = readdir(dir)))
 	{
-		if (!(curr = set_indir(indir->d_name, indir->d_type, lst, lst->name)))
+		if (!(curr = set_indir(indir->d_name, indir->d_type)))
+		{
+			closedir(dir);
 			return (NULL);
+		}
 		curr->prev = (*end);
 		if ((*end))
 			(*end)->next = curr;
@@ -58,12 +58,13 @@ t_list	*fill_such(t_list **begsuch, t_list *currsuch, char **av, int i)
 {
 	t_list *nosuch;
 
-	nosuch = (t_list*)ft_memalloc(sizeof(t_list));
+	if (!(nosuch = (t_list*)ft_memalloc(sizeof(t_list))))
+		exit(2);
 	if (currsuch)
 		currsuch->next = nosuch;
 	if (!(*begsuch))
 		(*begsuch) = nosuch;
-	nosuch->content = ft_strdup(av[i]);
+	assign_char((char**)&(nosuch->content), av[i]);
 	currsuch = nosuch;
 	nosuch = nosuch->next;
 	return (currsuch);

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/20 12:06:39 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/23 01:49:01 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@ int					is_major(t_indir *lst);
 
 void				put_nosuch(t_list *such);
 void				deal_solo(int i, int ac, char **av, t_fg *g_fg);
-int					str_swap(t_indir *curr);
+int					str_swap(t_indir *one, t_indir *two);
 void				put_ferror(int error, t_lst *lst);
-void				put_error(int error, t_lst *lst);
+void				put_error(int error, t_lst *lst, DIR *dir);
 
 void				sort_alpha(t_indir *names, int size);
 void				sort_date(t_indir *names, int size);
@@ -108,20 +108,18 @@ int					size_len(t_indir *lst);
 int					len_list(t_indir *list);
 int					max_int(int nb1, int nb2);
 
-t_indir				*set_indir(char *name, unsigned char type, t_lst *par, char *lst_name);
-t_indir				*set_stat_indir(t_indir *lst, char *lst_name, t_lst *par,
-		t_fg *g_fg);
-char				set_type(mode_t file_stat);
+t_indir				*set_indir(char *name, unsigned char type);
 char				*set_right(mode_t file_stat);
+t_indir				*set_stat_indir(t_indir **lst, t_indir *begin,
+		t_lst *par, char *par_name);
 
-int					max_nblen(t_indir *lst, t_fg *g_fg);
 int					get_rec_right(t_indir *list, char *par);
 void				deal_dlist(t_indir *list, char *name, t_fg *g_fg);
-void				deal_llist(t_indir *list, t_dbl ug_size, int max_len,
+void				deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len,
 		t_fg *g_fg);
 void				deal_slink(t_indir *list, char *par_name);
 
-t_indir				*set_list(int *i, t_lst *lst, t_indir **end);
+t_indir				*set_list(int *i, t_indir **end, DIR *dir);
 void				list_swap(t_lst *curr, t_lst *next);
 t_list				*fill_such(t_list **begsuch, t_list *currsuch, char **av,
 		int i);
@@ -133,5 +131,11 @@ void				put_list(t_indir *list, int size, t_fg *g_fg);
 void				put_dlist(t_indir *list, int size, t_lst *par, t_fg *g_fg);
 void				put_llist(t_indir *list, int nb_blk, t_lst *par,
 		t_fg *g_fg);
+
+void				assign_char(char **str, char *assign);
+void				join_char(char **str, char *beg, char *end, int choice);
+void				double_int(int *targ1, int *targ2, int val1, int val2);
+int					max_link_len(t_indir *list, t_fg *g_fg);
+int					max_nblen(t_indir *lst, t_fg *g_fg);
 
 #endif

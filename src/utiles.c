@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/19 13:39:06 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/22 16:53:55 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		size_len(t_indir *lst)
 	if (lst->major < 0)
 		return (nb_len(lst->size));
 	else
-		return (nb_len(lst->major) + nb_len(lst->minor) + 3);
+		return (nb_len(lst->major) + nb_len(lst->minor) + 2);
 }
 
 int		max_int(int nb1, int nb2)

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/20 15:59:07 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/23 01:34:09 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ t_lst		*lst_new(char *file)
 	t_lst	*new;
 	DIR		*dir;
 
-	new = ft_memalloc(sizeof(t_lst));
-	new->name = ft_strdup(file);
+	if (!(new = ft_memalloc(sizeof(t_lst))))
+		exit(2);
+	assign_char(&(new->name), file);
 	if ((dir = opendir(new->name)))
 		new->isdir = 1;
 	if (dir)
@@ -47,7 +48,7 @@ t_lst		*lst_new(char *file)
 void		put_llist(t_indir *list, int nb_blk, t_lst *par, t_fg *g_fg)
 {
 	t_dbl	ug_size;
-	int		size;
+	t_dbl	size;
 
 	ug_size.x = 0;
 	ug_size.y = 0;
@@ -59,7 +60,8 @@ void		put_llist(t_indir *list, int nb_blk, t_lst *par, t_fg *g_fg)
 		ft_putnbr(nb_blk);
 		ft_putchar('\n');
 	}
-	size = max_nblen(list, g_fg);
+	size.x = max_nblen(list, g_fg);
+	size.y = max_link_len(list, g_fg);
 	while (list)
 	{
 		if (!(list->name[0] == '.' && !(*g_fg & ALL_FILE)))
