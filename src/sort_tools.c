@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:13:14 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:23:13 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/26 16:11:35 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,17 @@ void	sort_alpha(t_indir *names, int size)
 	{
 		continuer = 1;
 		i = 0;
-		curr = names;
-		while (i < size)
+		curr = ret_head(names);
+		while (i < size && curr && curr->next)
 		{
 			if (i + 1 != size && ft_strcmp(curr->name, curr->next->name) > 0)
-			{
 				continuer = str_swap(curr, curr->next);
-				i++;
-			}
 			else
 			{
-				i++;
 				if (curr->next)
 					curr = curr->next;
 			}
+			i++;
 		}
 		size--;
 	}
@@ -61,7 +58,7 @@ void	sort_date(t_indir *names, int size)
 		continuer = 1;
 		i = 0;
 		curr = ret_head(names);
-		while (curr->next && i < size)
+		while (curr && curr->next && i < size)
 		{
 			if (i + 1 != size && curr->next && curr->itime < curr->next->itime)
 			{

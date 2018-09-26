@@ -6,11 +6,36 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:30:15 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/26 17:54:57 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
+
+char		extended_attribut(char *file_name)
+{
+	acl_t		acl;
+	acl_entry_t	entry;
+	ssize_t		xattr;
+	char		ret;
+
+	xattr = 0;
+	acl = acl_get_link_np(file_name, ACL_TYPE_EXTENDED);
+	if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &entry) == -1)
+	{
+		acl_free(acl);
+		acl = NULL;
+	}
+	xattr = listxattr(file_name, NULL, 0, XATTR_NOFOLLOW);
+	if (xattr > 0)
+		ret = '@';
+	else if (acl != NULL)
+		ret = '+';
+	else
+		ret = ' ';
+	acl_free(acl);
+	return (ret);
+}
 
 static char	set_type(mode_t file_stat)
 {
@@ -32,11 +57,11 @@ static char	set_type(mode_t file_stat)
 		return ('?');
 }
 
-char		*set_right(mode_t file_stat)
+char		*set_right(mode_t file_stat, char *file_name)
 {
 	char *tab;
 
-	if (!(tab = (char*)malloc(sizeof(char) * 11)))
+	if (!(tab = (char*)malloc(sizeof(char) * 12)))
 		return (NULL);
 	tab[0] = set_type(file_stat);
 	tab[1] = file_stat & S_IRUSR ? 'r' : '-';
@@ -57,17 +82,18 @@ char		*set_right(mode_t file_stat)
 		tab[9] = file_stat & S_IXOTH ? 't' : 'T';
 	else
 		tab[9] = file_stat & S_IXOTH ? 'x' : '-';
-	tab[10] = '\0';
+	tab[10] = extended_attribut(file_name);
+	tab[11] = '\0';
 	return (tab);
 }
 
-static void	get_stat_indir(t_indir *lst, struct stat file_stat)
+static void	get_stat_indir(t_indir *lst, struct stat file_stat, char *file_name)
 {
 	struct passwd	*uid;
 	struct group	*gid;
 
 	lst->nb_link = file_stat.st_nlink;
-	if (!(lst->right = set_right(file_stat.st_mode)))
+	if (!(lst->right = set_right(file_stat.st_mode, file_name)))
 		exit(2);
 	if (!(uid = getpwuid(file_stat.st_uid)))
 		lst->uid_user = ft_itoa(file_stat.st_uid);
@@ -107,9 +133,7 @@ void		stat_fail(t_indir **lst, t_indir **begin, t_lst *par)
 
 	if ((*lst)->next)
 	{
-		l_tmp = (*lst)->next->next;
 		(*lst) = (*lst)->next;
-		(*lst)->next = l_tmp;
 		if ((*lst)->prev->prev)
 			(*lst)->prev->prev->next = (*lst);
 		l_tmp = (*lst)->prev->prev;
@@ -150,7 +174,7 @@ t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par, char *par_na
 			(*lst)->itime = stat.st_mtime;
 			par->nb_blk += ((*lst)->name[0] != '.' || *(par->g_fg) & ALL_FILE) ?
 				stat.st_blocks : 0;
-			get_stat_indir((*lst), stat);
+			get_stat_indir((*lst), stat, tmp);
 			(*lst) = (*lst)->next;
 		}
 		free(tmp);

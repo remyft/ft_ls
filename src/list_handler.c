@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:34:09 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/26 16:11:43 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void		put_list(t_indir *list, int size, t_fg *g_fg)
 	int i;
 
 	i = 0;
-	while (i < size)
+	while (list && i < size)
 	{
 		if (!(list->name[0] == '.' && !(*g_fg & ALL_FILE)))
 			ft_putendl(list->name);

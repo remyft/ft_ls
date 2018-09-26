@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:59:23 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/26 16:16:16 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg)
 			return ;
 	if (*g_fg & DATE_SORT)
 		sort_date(lst->indir, size);
+	while (lst->indir->prev)
+		lst->indir = lst->indir->prev;
 	end = lst->indir;
 	while (end->next)
 		end = end->next;
@@ -53,6 +55,8 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 		return (put_error(1 << 2, lst, dir));
 	lst->size = i;
 	sort_alpha(lst->indir, i);
+	while (lst->indir->prev)
+		lst->indir = lst->indir->prev;
 	deal_flags(lst, end, lst->size, g_fg);
 	if (lst->indir)
 		while (lst->indir->prev)

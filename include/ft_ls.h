@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:49:01 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/26 17:07:00 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <pwd.h>
 # include <grp.h>
 # include <time.h>
+# include <sys/xattr.h>
+# include <sys/acl.h>
 
 # define F_ACCESS_FAIL 1 << 0
 # define F_STAT_FAIL 1 << 2
@@ -109,7 +111,6 @@ int					len_list(t_indir *list);
 int					max_int(int nb1, int nb2);
 
 t_indir				*set_indir(char *name, unsigned char type);
-char				*set_right(mode_t file_stat);
 t_indir				*set_stat_indir(t_indir **lst, t_indir *begin,
 		t_lst *par, char *par_name);
 
