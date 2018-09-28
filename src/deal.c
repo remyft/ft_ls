@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/26 16:16:16 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 20:37:30 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 void	deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg)
 {
-	if (*g_fg & DATE_SORT || *g_fg & LONG_LISTING)
+	if (*g_fg & DATE_SORT || *g_fg & LONG_LISTING || *g_fg & LONGO ||
+			*g_fg & SIZE_SORT)
 		if (!(lst->indir = set_stat_indir(&(lst->indir), lst->indir,
 			lst, lst->name)))
 			return ;
-	if (*g_fg & DATE_SORT)
+	if (*g_fg & DATE_SORT && !(*g_fg & UNSORT) && !(*g_fg & SIZE_SORT))
 		sort_date(lst->indir, size);
+	if (*g_fg & SIZE_SORT && !(*g_fg & UNSORT))
+		sort_size(lst->indir, size);
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
 	end = lst->indir;
 	while (end->next)
 		end = end->next;
-	if (*g_fg & LONG_LISTING)
+	if (*g_fg & LONG_LISTING || *g_fg & LONGO)
 		(*g_fg & REVERSE) ? put_llist(end, lst->nb_blk, lst, g_fg) :
 			put_llist(lst->indir, lst->nb_blk, lst, g_fg);
 	else
@@ -54,7 +57,8 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 	if (!(lst->indir = set_list(&i, &end, dir)))
 		return (put_error(1 << 2, lst, dir));
 	lst->size = i;
-	sort_alpha(lst->indir, i);
+	if (!(*g_fg & UNSORT))
+		sort_alpha(lst->indir, i);
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
 	deal_flags(lst, end, lst->size, g_fg);

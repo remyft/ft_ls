@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/26 17:07:00 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 20:30:32 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,11 @@ typedef enum		e_flag
 	ALL_FILE = 1 << 2,
 	REVERSE = 1 << 3,
 	DATE_SORT = 1 << 4,
-	LONG_T = 1 << 5
+	LONG_T = 1 << 5,
+	HIDEN_FILE = 1 << 6,
+	LONGO = 1 << 7,
+	UNSORT = 1 << 8,
+	SIZE_SORT = 1 << 9
 }					t_fg;
 
 typedef struct		s_double
@@ -100,6 +104,7 @@ void				put_error(int error, t_lst *lst, DIR *dir);
 
 void				sort_alpha(t_indir *names, int size);
 void				sort_date(t_indir *names, int size);
+void				sort_size(t_indir *names, int size);
 t_lst				*sort_list(t_lst *list);
 t_lst				*sort_not_dir(t_lst *list, t_fg *g_fg);
 void				sort_dir(t_lst *list, t_fg *g_fg);
@@ -107,7 +112,7 @@ void				sort_dir(t_lst *list, t_fg *g_fg);
 void				ft_putname(char *name);
 int					nb_len(int nb);
 int					size_len(t_indir *lst);
-int					len_list(t_indir *list);
+int					len_list(t_indir *list, t_fg *g_fg);
 int					max_int(int nb1, int nb2);
 
 t_indir				*set_indir(char *name, unsigned char type);
@@ -138,5 +143,7 @@ void				join_char(char **str, char *beg, char *end, int choice);
 void				double_int(int *targ1, int *targ2, int val1, int val2);
 int					max_link_len(t_indir *list, t_fg *g_fg);
 int					max_nblen(t_indir *lst, t_fg *g_fg);
+
+char				*set_right(mode_t file_stat, char *file_name);
 
 #endif

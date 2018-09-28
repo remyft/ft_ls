@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:48:24 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 19:33:34 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,7 @@ void	put_error(int error, t_lst *lst, DIR *dir)
 			if (!(indir = set_stat_indir(&indir, indir, lst, ".")))
 				return (free_list(indir, lst->g_fg));
 			put_llist(indir, -1, lst, lst->g_fg);
-			if (indir)
-				free_list(indir, lst->g_fg);
+			free_list(indir, lst->g_fg);
 		}
 		else
 			ft_putendl(lst->name);

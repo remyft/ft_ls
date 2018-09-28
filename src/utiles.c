@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/22 16:53:55 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 19:29:03 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ft_putname(char *name)
 	ft_putstr_fd(&name[i - j], 2);
 }
 
-int		len_list(t_indir *list)
+int		len_list(t_indir *list, t_fg *g_fg)
 {
 	t_indir	*curr;
 	int		i;
@@ -62,7 +62,8 @@ int		len_list(t_indir *list)
 	curr = list;
 	while (curr)
 	{
-		if (curr->name[0] != '.')
+		if (curr->name[0] != '.' || (cmp_file(curr->name) &&
+					*g_fg & HIDEN_FILE))
 			i++;
 		curr = curr->next;
 	}

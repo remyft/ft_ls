@@ -6,86 +6,11 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/26 17:54:57 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 20:29:18 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
-
-char		extended_attribut(char *file_name)
-{
-	acl_t		acl;
-	acl_entry_t	entry;
-	ssize_t		xattr;
-	char		ret;
-
-	xattr = 0;
-	acl = acl_get_link_np(file_name, ACL_TYPE_EXTENDED);
-	if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &entry) == -1)
-	{
-		acl_free(acl);
-		acl = NULL;
-	}
-	xattr = listxattr(file_name, NULL, 0, XATTR_NOFOLLOW);
-	if (xattr > 0)
-		ret = '@';
-	else if (acl != NULL)
-		ret = '+';
-	else
-		ret = ' ';
-	acl_free(acl);
-	return (ret);
-}
-
-static char	set_type(mode_t file_stat)
-{
-	if (S_ISREG(file_stat))
-		return ('-');
-	else if (S_ISDIR(file_stat))
-		return ('d');
-	else if (S_ISBLK(file_stat))
-		return ('b');
-	else if (S_ISCHR(file_stat))
-		return ('c');
-	else if (S_ISFIFO(file_stat))
-		return ('p');
-	else if (S_ISLNK(file_stat))
-		return ('l');
-	else if (S_ISSOCK(file_stat))
-		return ('s');
-	else
-		return ('?');
-}
-
-char		*set_right(mode_t file_stat, char *file_name)
-{
-	char *tab;
-
-	if (!(tab = (char*)malloc(sizeof(char) * 12)))
-		return (NULL);
-	tab[0] = set_type(file_stat);
-	tab[1] = file_stat & S_IRUSR ? 'r' : '-';
-	tab[2] = file_stat & S_IWUSR ? 'w' : '-';
-	if (file_stat & S_ISUID)
-		tab[3] = file_stat & S_IXUSR ? 's' : 'S';
-	else
-		tab[3] = file_stat & S_IXUSR ? 'x' : '-';
-	tab[4] = file_stat & S_IRGRP ? 'r' : '-';
-	tab[5] = file_stat & S_IWGRP ? 'w' : '-';
-	if (file_stat & S_ISGID)
-		tab[6] = file_stat & S_IXGRP ? 's' : 'S';
-	else
-		tab[6] = file_stat & S_IXGRP ? 'x' : '-';
-	tab[7] = file_stat & S_IROTH ? 'r' : '-';
-	tab[8] = file_stat & S_IWOTH ? 'w' : '-';
-	if (file_stat & S_ISVTX)
-		tab[9] = file_stat & S_IXOTH ? 't' : 'T';
-	else
-		tab[9] = file_stat & S_IXOTH ? 'x' : '-';
-	tab[10] = extended_attribut(file_name);
-	tab[11] = '\0';
-	return (tab);
-}
 
 static void	get_stat_indir(t_indir *lst, struct stat file_stat, char *file_name)
 {
@@ -153,18 +78,22 @@ void		stat_fail(t_indir **lst, t_indir **begin, t_lst *par)
 	par->size -= 1;
 }
 
-t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par, char *par_name)
+static void	double_join(char **targ, char *src1, char *src2, char *src3)
 {
-	char *tmp;
+	join_char(targ, src1, src2, 0);
+	join_char(targ, *targ, src3, 1);
+}
+
+t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par,
+		char *par_name)
+{
+	char	*tmp;
 	t_stat	stat;
 
 	while ((*lst))
 	{
 		if ((*lst)->name[0] != '/')
-		{
-			join_char(&tmp, par_name, "/", 0);
-			join_char(&tmp, tmp, (*lst)->name, 1);
-		}
+			double_join(&tmp, par_name, "/", (*lst)->name);
 		else
 			assign_char(&tmp, (*lst)->name);
 		if ((lstat(tmp, &stat)) == -1)
@@ -172,7 +101,9 @@ t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par, char *par_na
 		else
 		{
 			(*lst)->itime = stat.st_mtime;
-			par->nb_blk += ((*lst)->name[0] != '.' || *(par->g_fg) & ALL_FILE) ?
+			par->nb_blk += (((*lst)->name[0] != '.' ||
+				*(par->g_fg) & ALL_FILE) || (cmp_file((*lst)->name) &&
+					*(par->g_fg) & HIDEN_FILE)) ?
 				stat.st_blocks : 0;
 			get_stat_indir((*lst), stat, tmp);
 			(*lst) = (*lst)->next;

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/22 16:53:04 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/28 19:28:48 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *g_fg)
 	ft_putend(list->uid_user, space);
 	ft_strdel(&space);
 	space = nb_space(list->gid_user, 0, ug_size.y);
-	ft_putend(list->gid_user, space);
+	!(*g_fg & LONGO) ? ft_putend(list->gid_user, space) : ft_putstr("");
 	ft_strdel(&space);
 	space = nb_space(NULL, size_len(list), max_len.x);
 	if (list->minor >= 0)
