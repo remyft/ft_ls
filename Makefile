@@ -6,7 +6,7 @@
 #    By: rfontain <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/28 20:51:07 by rfontain          #+#    #+#              #
-#    Updated: 2018/09/28 20:51:15 by rfontain         ###   ########.fr        #
+#    Updated: 2018/09/29 15:08:07 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,7 +86,8 @@ reclean: clean
 re: reclean all
 
 nn:
-	norminette $(SRCS)
+	norminette $(LIB_PATH)
+	norminette src
 	norminette $(INC_DIR)
 
 .PHONY: clean fclean all re

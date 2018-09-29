@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/28 20:30:32 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/29 23:30:18 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ typedef enum		e_flag
 	HIDEN_FILE = 1 << 6,
 	LONGO = 1 << 7,
 	UNSORT = 1 << 8,
-	SIZE_SORT = 1 << 9
+	SIZE_SORT = 1 << 9,
+	GET_ID = 1 << 10
 }					t_fg;
 
 typedef struct		s_double
@@ -71,11 +72,13 @@ typedef struct		s_indir
 typedef struct		s_lst
 {
 	char			*name;
-	t_indir			*indir;
 	int				isdir;
 	int				size;
 	int				nb_blk;
+	int				size_f;
+	time_t			itime;
 	t_fg			*g_fg;
+	t_indir			*indir;
 	struct s_lst	*next;
 	struct s_lst	*prev;
 }					t_lst;

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:20:29 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/23 01:17:13 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/29 23:49:09 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,19 @@ t_indir	*set_list(int *i, t_indir **end, DIR *dir)
 
 void	list_swap(t_lst *curr, t_lst *next)
 {
-	char	*curr_name;
-	int		curr_isdir;
+	t_lst *tmp_prev;
+	t_lst *tmp_next;
 
-	curr_name = curr->name;
-	curr_isdir = curr->isdir;
-	curr->name = next->name;
-	curr->isdir = next->isdir;
-	next->name = curr_name;
-	next->isdir = curr_isdir;
+	tmp_prev = curr->prev;
+	tmp_next = next->next;
+	curr->prev = next;
+	curr->next = tmp_next;
+	next->next = curr;
+	next->prev = tmp_prev;
+	if (curr->next)
+		curr->next->prev = curr;
+	if (next->prev)
+		next->prev->next = next;
 }
 
 t_list	*fill_such(t_list **begsuch, t_list *currsuch, char **av, int i)

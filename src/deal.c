@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/28 20:37:30 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 00:00:45 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,34 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 	free_list(lst->indir, g_fg);
 }
 
+t_lst	*set_stat_list(t_lst *list)
+{
+	t_lst	*begin;
+	t_stat	stat;
+
+	begin = list;
+	while (list)
+	{
+		lstat(list->name, &stat);
+		list->itime = stat.st_mtime;
+		list->size_f = stat.st_size;
+		list = list->next;
+	}
+	return (begin);
+}
+
 void	big_deal(t_lst *list, t_fg *g_fg)
 {
 	t_lst	*begin;
 	t_lst	*mid;
 
 	begin = list;
-	list = begin;
+	list = set_stat_list(list);
 	list = sort_list(list);
 	mid = sort_not_dir(list, g_fg);
 	sort_dir(mid, g_fg);
+	while (begin->prev)
+		begin = begin->prev;
 	while (begin)
 	{
 		if (begin->prev && begin->isdir == 1)
