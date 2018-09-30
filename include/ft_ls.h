@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 18:18:50 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 21:50:09 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,16 @@ typedef struct		s_double
 
 typedef struct		s_indir
 {
-	char			*name;
 	unsigned int	type;
-	char			*right;
 	int				nb_link;
-	char			*uid_user;
-	char			*gid_user;
-	int				size;
 	int				major;
 	int				minor;
+	int				size;
 	char			*time;
+	char			*gid_user;
+	char			*uid_user;
+	char			*right;
+	char			*name;
 	time_t			itime;
 	struct s_indir	*next;
 	struct s_indir	*prev;
@@ -71,7 +71,6 @@ typedef struct		s_indir
 
 typedef struct		s_lst
 {
-	char			*name;
 	int				isdir;
 	int				size;
 	int				nb_blk;
@@ -79,6 +78,7 @@ typedef struct		s_lst
 	int				stat;
 	time_t			itime;
 	t_fg			*g_fg;
+	char			*name;
 	t_indir			*indir;
 	struct s_lst	*next;
 	struct s_lst	*prev;
@@ -98,7 +98,6 @@ int					cmp_file(char *name);
 char				*get_time(char *file, time_t itime);
 void				max_size(t_indir *lst, int *uid_size, int *gid_size);
 char				*nb_space(char *str, int nb, int size);
-int					is_major(t_indir *lst);
 
 void				put_nosuch(t_list *such);
 void				deal_solo(int i, int ac, char **av, t_fg *g_fg);
@@ -113,7 +112,6 @@ t_lst				*sort_list(t_lst *list);
 t_lst				*sort_not_dir(t_lst *list, t_fg *g_fg);
 void				sort_dir(t_lst *list, t_fg *g_fg);
 
-void				ft_putname(char *name);
 int					nb_len(int nb);
 int					size_len(t_indir *lst);
 int					len_list(t_indir *list, t_fg *g_fg);

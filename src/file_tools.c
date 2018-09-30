@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:11:04 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/22 21:06:29 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 21:47:41 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,21 +76,5 @@ char	*nb_space(char *str, int nb, int size)
 	while (i < size - stsize + 1)
 		ret[i++] = ' ';
 	ret[i] = '\0';
-	return (ret);
-}
-
-int		is_major(t_indir *lst)
-{
-	int ret;
-
-	ret = 0;
-	while (lst)
-	{
-		if (lst->size >= 1000 && lst->major < 0 && cmp_file(lst->name))
-			return (0);
-		if (lst->minor >= 0)
-			ret = 1;
-		lst = lst->next;
-	}
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/28 19:29:03 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 21:45:45 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,6 @@ int		size_len(t_indir *lst)
 int		max_int(int nb1, int nb2)
 {
 	return ((nb1 > nb2) ? nb1 : nb2);
-}
-
-void	ft_putname(char *name)
-{
-	int		i;
-	int		j;
-
-	i = 0;
-	while (name[i])
-		i++;
-	j = 0;
-	while (i - j && name[i - j] != '/')
-		j++;
-	j--;
-	ft_putstr_fd(&name[i - j], 2);
 }
 
 int		len_list(t_indir *list, t_fg *g_fg)

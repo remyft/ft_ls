@@ -6,11 +6,20 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 22:52:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/29 18:01:42 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:17:07 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
+
+void	put_error_flag(char fl)
+{
+	ft_putstr_fd("ft_ls: illegal option -- ", 2);
+	ft_putchar_fd(fl, 2);
+	ft_putchar_fd('\n', 2);
+	ft_putstr_fd("usage: ./ft_ls [-ARSTafnort1] [file ...]\n", 2);
+	exit(1);
+}
 
 void	get_flag(char *flags, t_fg *g_fg)
 {
@@ -20,17 +29,12 @@ void	get_flag(char *flags, t_fg *g_fg)
 	if (ft_strlen(flags) == 2)
 		set_flags(flags[1], g_fg);
 	else
+	{
+		if (ft_strstr(flags + 1, "-"))
+			put_error_flag('-');
 		while (flags[i])
 			set_flags(flags[i++], g_fg);
-}
-
-void	put_error_flag(char fl)
-{
-	ft_putstr_fd("ft_ls: illegal option -- ", 2);
-	ft_putchar_fd(fl, 2);
-	ft_putchar_fd('\n', 2);
-	ft_putstr_fd("usage: ft_ls [-ARSTafnort1] [file ...]\n", 2);
-	exit(1);
+	}
 }
 
 void	set_flags(char fl, t_fg *g_fg)

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 14:51:16 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:01:44 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 	t_list	*nosuch;
 	DIR		*dir;
 
-	if (!(dir = opendir(av[i])) && errno == ENOENT)
+	dir = NULL;
+	if (ac - i == 1 && !(dir = opendir(av[i])) && errno == ENOENT)
 	{
 		if (!(nosuch = (t_list*)ft_memalloc(sizeof(t_list))))
 			exit(2);

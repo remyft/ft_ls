@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 15:16:53 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 21:54:20 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void		free_list(t_indir *curr, t_fg *g_fg)
 		while (curr)
 		{
 			next = curr->next;
-			if (*g_fg & LONG_LISTING || *g_fg & DATE_SORT || *g_fg & SIZE_SORT)
+			if (*g_fg & LONG_LISTING || *g_fg & DATE_SORT || *g_fg & SIZE_SORT
+					|| *g_fg & GET_ID || *g_fg & LONG_T || *g_fg & LONGO)
 			{
 				ft_strdel(&(curr->right));
 				ft_strdel(&(curr->uid_user));
