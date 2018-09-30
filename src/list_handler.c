@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 21:54:20 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:21:59 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void		put_llist(t_indir *list, int nb_blk, t_lst *par, t_fg *g_fg)
 	ug_size.x = 0;
 	ug_size.y = 0;
 	max_size(list, &(ug_size.x), &(ug_size.y));
-	if (nb_blk >= 0 && (list->next || list->prev) &&
-			(*g_fg & ALL_FILE || len_list(list, g_fg) > 0))
+	if (nb_blk >= 0 && (list->next || list->prev)
+			&& (*g_fg & ALL_FILE || len_list(list, g_fg) > 0))
 	{
 		ft_putstr("total ");
 		ft_putnbr(nb_blk);
@@ -68,8 +68,8 @@ void		put_llist(t_indir *list, int nb_blk, t_lst *par, t_fg *g_fg)
 	size.y = max_link_len(list, g_fg);
 	while (list)
 	{
-		if (!((list->name[0] == '.' && !(*g_fg & ALL_FILE))) ||
-				(cmp_file(list->name) && *g_fg & HIDEN_FILE))
+		if (!((list->name[0] == '.' && !(*g_fg & ALL_FILE)))
+				|| (cmp_file(list->name) && *g_fg & HIDEN_FILE))
 		{
 			deal_llist(list, ug_size, size, g_fg);
 			deal_slink(list, par->name);
@@ -85,8 +85,8 @@ void		put_dlist(t_indir *list, int size, t_lst *par, t_fg *g_fg)
 	i = 0;
 	while (list && i < size)
 	{
-		if (list->name[0] == '.' && !(*g_fg & ALL_FILE) &&
-				!(*g_fg & HIDEN_FILE))
+		if (list->name[0] == '.' && !(*g_fg & ALL_FILE)
+				&& !(*g_fg & HIDEN_FILE))
 			list = (*g_fg & REVERSE) ? list->prev : list->next;
 		else if (cmp_file(list->name) && get_rec_right(list, par->name))
 		{
@@ -106,8 +106,8 @@ void		put_list(t_indir *list, int size, t_fg *g_fg)
 	i = 0;
 	while (list && i < size)
 	{
-		if (!(list->name[0] == '.' && !(*g_fg & ALL_FILE)) ||
-				(cmp_file(list->name) && *g_fg & HIDEN_FILE))
+		if (!(list->name[0] == '.' && !(*g_fg & ALL_FILE))
+				|| (cmp_file(list->name) && *g_fg & HIDEN_FILE))
 			ft_putendl(list->name);
 		list = (*g_fg & REVERSE) ? list->prev : list->next;
 		i++;

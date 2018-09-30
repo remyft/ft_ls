@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 11:03:08 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 17:17:47 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:26:37 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ int		max_nblen(t_indir *lst, t_fg *g_fg)
 	{
 		if (lst->major < 0)
 		{
-			if ((size = nb_len(lst->size)) > max && (*g_fg & ALL_FILE ||
-					(*g_fg & HIDEN_FILE && cmp_file(lst->name)) ||
-						lst->name[0] != '.'))
+			if ((size = nb_len(lst->size)) > max && (*g_fg & ALL_FILE
+					|| (*g_fg & HIDEN_FILE && cmp_file(lst->name))
+						|| lst->name[0] != '.'))
 				max = size;
 		}
 		else

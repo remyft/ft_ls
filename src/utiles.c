@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 21:45:45 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:26:54 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ int		len_list(t_indir *list, t_fg *g_fg)
 	curr = list;
 	while (curr)
 	{
-		if (curr->name[0] != '.' || (cmp_file(curr->name) &&
-					*g_fg & HIDEN_FILE))
+		if (curr->name[0] != '.' || (cmp_file(curr->name)
+					&& *g_fg & HIDEN_FILE))
 			i++;
 		curr = curr->next;
 	}

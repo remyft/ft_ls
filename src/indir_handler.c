@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:51:28 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 17:46:08 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 22:23:16 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@ t_indir		*set_stat_indir(t_indir **lst, t_indir *begin, t_lst *par,
 		else
 		{
 			(*lst)->itime = stat.st_mtime;
-			par->nb_blk += (((*lst)->name[0] != '.' ||
-				*(par->g_fg) & ALL_FILE) || (cmp_file((*lst)->name) &&
-					*(par->g_fg) & HIDEN_FILE)) ?
+			par->nb_blk += (((*lst)->name[0] != '.'
+				|| *(par->g_fg) & ALL_FILE) || (cmp_file((*lst)->name)
+					&& *(par->g_fg) & HIDEN_FILE)) ?
 				stat.st_blocks : 0;
 			get_stat_indir((*lst), stat, tmp, par->g_fg);
 			(*lst) = (*lst)->next;
