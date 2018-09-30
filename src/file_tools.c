@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:11:04 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 21:47:41 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 23:57:51 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*get_time(char *file, time_t itime)
 	ret = ft_strcpy(ret, &file[4]);
 	ret[6] = ' ';
 	i = 6;
-	if (now - itime < 15778800 && now - itime >= 0)
+	if (now - itime < 15778800 && now - itime > 0)
 		while (++i < 12)
 			ret[i] = file[i + 4];
 	else
