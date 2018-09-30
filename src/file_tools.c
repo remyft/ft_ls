@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:11:04 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 23:57:51 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 01:07:40 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ char	*get_time(char *file, time_t itime)
 	ret = ft_strcpy(ret, &file[4]);
 	ret[6] = ' ';
 	i = 6;
-	if (now - itime < 15778800 && now - itime > 0)
+	if (now - itime < 15778800 && now - itime >= 0)
 		while (++i < 12)
 			ret[i] = file[i + 4];
 	else
 	{
-		while (++i < 11)
-			ret[i] = file[i + 13];
-		ret[i++] = ' ';
+		ret[++i] = ' ';
+		while (++i < 12)
+			ret[i] = file[i + 12];
 	}
 	ret[i] = '\0';
 	file[10] = ' ';
@@ -47,14 +47,18 @@ char	*get_time(char *file, time_t itime)
 	return (ret);
 }
 
-void	max_size(t_indir *lst, int *uid_size, int *gid_size)
+void	max_size(t_indir *lst, int *uid_size, int *gid_size, t_fg *g_fg)
 {
 	while (lst->prev)
 		lst = lst->prev;
 	while (lst)
 	{
-		(*uid_size) = max_int(ft_strlen(lst->uid_user), (*uid_size));
-		(*gid_size) = max_int(ft_strlen(lst->gid_user), (*gid_size));
+		if (lst->name[0] != '.' || (*g_fg & HIDEN_FILE && cmp_file(lst->name))
+				|| *g_fg & ALL_FILE)
+		{
+			(*uid_size) = max_int(ft_strlen(lst->uid_user), (*uid_size));
+			(*gid_size) = max_int(ft_strlen(lst->gid_user), (*gid_size));
+		}
 		lst = lst->next;
 	}
 }

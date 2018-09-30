@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 21:50:09 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 00:16:25 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ void				big_deal_list(int i, int ac, char **av, t_fg *g_fg);
 
 int					cmp_file(char *name);
 char				*get_time(char *file, time_t itime);
-void				max_size(t_indir *lst, int *uid_size, int *gid_size);
+void				max_size(t_indir *lst, int *uid_size, int *gid_size,
+		t_fg *g_fg);
 char				*nb_space(char *str, int nb, int size);
 
 void				put_nosuch(t_list *such);

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 17:07:15 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 00:50:29 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void		deal_slink(t_indir *list, char *par_name)
 	char	buff[256];
 	int		size;
 
-	if (list->name[0] != '/')
+	if (list->name[0] != '/' && ft_strcmp(list->name, par_name) != 0)
 	{
 		join_char(&tmp, par_name, "/", 0);
 		join_char(&tmp, tmp, list->name, 1);

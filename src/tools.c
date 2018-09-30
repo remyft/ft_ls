@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 22:29:27 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 01:03:26 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,9 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 {
 	t_lst	*file;
 	t_list	*nosuch;
-	DIR		*dir;
+	t_stat	stat;
 
-	dir = NULL;
-	if (ac - i == 1 && !(dir = opendir(av[i])) && errno == ENOENT)
+	if (ac - i == 1 && (lstat(av[i], &stat) == -1) && errno == ENOENT)
 	{
 		if (!(nosuch = (t_list*)ft_memalloc(sizeof(t_list))))
 			exit(2);
@@ -49,8 +48,6 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 		free(file->name);
 		free(file);
 	}
-	if (dir)
-		closedir(dir);
 }
 
 int		str_swap(t_indir *one, t_indir *two)
@@ -89,8 +86,7 @@ void	put_ferror(int error, t_lst *lst)
 				return ;
 			}
 			put_llist(indir, -1, lst, lst->g_fg);
-			if (indir)
-				free_list(indir, lst->g_fg);
+			free_list(indir, lst->g_fg);
 		}
 		else
 			ft_putendl(lst->name);

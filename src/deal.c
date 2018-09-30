@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 22:25:11 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 01:06:48 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,11 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 	end = NULL;
 	lst->nb_blk = 0;
 	lst->g_fg = g_fg;
-	if (!(dir = opendir((char*)lst->name)))
-		return (put_error(1, lst, dir));
+	dir = NULL;
 	if (readlink(lst->name, &tmp[0], 256) != -1)
 		return (put_error(F_IS_LINK, lst, dir));
+	if (!(dir = opendir((char*)lst->name)))
+		return (put_error(1, lst, dir));
 	i = 0;
 	if (!(lst->indir = set_list(&i, &end, dir)))
 		return (put_error(1 << 2, lst, dir));
@@ -62,9 +63,6 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
 	deal_flags(lst, end, lst->size, g_fg);
-	if (lst->indir)
-		while (lst->indir->prev)
-			lst->indir = lst->indir->prev;
 	free_list(lst->indir, g_fg);
 }
 
@@ -119,7 +117,7 @@ void	big_deal_list(int i, int ac, char **av, t_fg *g_fg)
 {
 	t_list	*begsuch;
 	t_list	*currsuch;
-	DIR		*dir;
+	t_stat	stat;
 	t_lst	*begin;
 	t_lst	*curr;
 
@@ -129,12 +127,10 @@ void	big_deal_list(int i, int ac, char **av, t_fg *g_fg)
 	currsuch = NULL;
 	while (i < ac)
 	{
-		if (!(dir = opendir(av[i])) && errno == ENOENT)
+		if ((lstat(av[i], &stat) == -1) && errno == ENOENT)
 			currsuch = fill_such(&begsuch, currsuch, av, i);
 		else
 			curr = fill_list(&begin, curr, av, i);
-		if (dir)
-			closedir(dir);
 		i++;
 	}
 	if (begsuch)

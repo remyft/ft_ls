@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 22:21:59 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 01:08:47 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@ void		free_list(t_indir *curr, t_fg *g_fg)
 {
 	t_indir *next;
 
+	if (curr)
+		while (curr->prev)
+			curr = curr->prev;
 	if (curr)
 		while (curr)
 		{
@@ -56,7 +59,7 @@ void		put_llist(t_indir *list, int nb_blk, t_lst *par, t_fg *g_fg)
 
 	ug_size.x = 0;
 	ug_size.y = 0;
-	max_size(list, &(ug_size.x), &(ug_size.y));
+	max_size(list, &(ug_size.x), &(ug_size.y), g_fg);
 	if (nb_blk >= 0 && (list->next || list->prev)
 			&& (*g_fg & ALL_FILE || len_list(list, g_fg) > 0))
 	{
