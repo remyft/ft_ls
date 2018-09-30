@@ -6,7 +6,7 @@
 #    By: rfontain <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/28 20:51:07 by rfontain          #+#    #+#              #
-#    Updated: 2018/09/29 15:08:07 by rfontain         ###   ########.fr        #
+#    Updated: 2018/09/30 18:19:24 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRCS =	src/deal.c			\
 		src/list_utiles.c	\
 		src/flag_handler.c	\
 		src/list_handler.c	\
+		src/list_usefull.c	\
 		src/indir_handler.c	\
 		src/right_handler.c	\
 

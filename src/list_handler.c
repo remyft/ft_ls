@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/08 08:54:09 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/28 19:35:44 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 15:16:53 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_lst		*lst_new(char *file)
 	t_lst	*new;
 	DIR		*dir;
 
-	if (!(new = ft_memalloc(sizeof(t_lst))))
+	if (!(new = (t_lst*)ft_memalloc(sizeof(t_lst))))
 		exit(2);
 	assign_char(&(new->name), file);
 	if ((dir = opendir(new->name)))

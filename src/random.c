@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 11:03:08 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/22 16:54:13 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 17:17:47 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ int		max_link_len(t_indir *list, t_fg *g_fg)
 	max = 0;
 	while (list)
 	{
-		if ((size = nb_len(list->nb_link)) > max)
+		if ((size = nb_len(list->nb_link)) > max && (*g_fg & ALL_FILE
+				|| (*g_fg & HIDEN_FILE && cmp_file(list->name))
+					|| list->name[0] != '.'))
 			max = size;
 		list = (*g_fg & REVERSE) ? list->prev : list->next;
 	}
@@ -63,12 +65,16 @@ int		max_nblen(t_indir *lst, t_fg *g_fg)
 	{
 		if (lst->major < 0)
 		{
-			if ((size = nb_len(lst->size)) > max)
+			if ((size = nb_len(lst->size)) > max && (*g_fg & ALL_FILE ||
+					(*g_fg & HIDEN_FILE && cmp_file(lst->name)) ||
+						lst->name[0] != '.'))
 				max = size;
 		}
 		else
 		{
-			if ((size = nb_len(lst->major) + nb_len(lst->minor) + 2) > max)
+			if ((size = nb_len(lst->major) + nb_len(lst->minor) + 2) > max
+					&& (*g_fg & ALL_FILE || (*g_fg & HIDEN_FILE
+						&& cmp_file(lst->name)) || lst->name[0] != '.'))
 				max = size;
 		}
 		lst = (*g_fg & REVERSE ? lst->prev : lst->next);

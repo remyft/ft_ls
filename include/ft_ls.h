@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/29 23:30:18 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 18:18:50 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct		s_lst
 	int				size;
 	int				nb_blk;
 	int				size_f;
+	int				stat;
 	time_t			itime;
 	t_fg			*g_fg;
 	t_indir			*indir;
@@ -148,5 +149,9 @@ int					max_link_len(t_indir *list, t_fg *g_fg);
 int					max_nblen(t_indir *lst, t_fg *g_fg);
 
 char				*set_right(mode_t file_stat, char *file_name);
+
+t_lst				*ret_list(t_lst *list);
+t_lst				*set_stat_list(t_lst *list);
+void				big_free(t_lst *list);
 
 #endif

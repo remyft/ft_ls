@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/29 19:18:48 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 17:07:15 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *g_fg)
 	char	*space;
 	char	*time;
 
-	ft_putend(list->right, " ");
+	ft_putstr(list->right);
 	deal_link(list, max_len.y);
-	space = nb_space(list->uid_user, 0, ug_size.x);
+	space = nb_space(list->uid_user, 0, ug_size.x + 1);
 	ft_putend(list->uid_user, space);
 	ft_strdel(&space);
 	space = nb_space(list->gid_user, 0, ug_size.y);

@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/28 19:33:34 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/09/30 14:51:16 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void	put_error(int error, t_lst *lst, DIR *dir)
 	else if (error & F_ACCESS_FAIL && errno == EACCES)
 	{
 		ft_putstr_fd("ft_ls: ", 2);
-		ft_putname(lst->name);
+		ft_putstr_fd(lst->name, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 	}
 	else
