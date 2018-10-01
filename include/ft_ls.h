@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 00:16:25 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 21:54:04 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,6 @@ typedef struct		s_lst
 	struct s_lst	*prev;
 }					t_lst;
 
-void				put_error_flag(char fl);
-void				set_flags(char fl, t_fg *g_fg);
 void				get_flag(char *flags, t_fg *g_fg);
 
 void				deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg);
@@ -113,6 +111,7 @@ t_lst				*sort_list(t_lst *list);
 t_lst				*sort_not_dir(t_lst *list, t_fg *g_fg);
 void				sort_dir(t_lst *list, t_fg *g_fg);
 
+void				ft_putname(char *name);
 int					nb_len(int nb);
 int					size_len(t_indir *lst);
 int					len_list(t_indir *list, t_fg *g_fg);

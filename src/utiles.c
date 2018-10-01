@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 22:26:54 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/01 21:53:49 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,21 @@ int		nb_len(int nb)
 		i++;
 	}
 	return (i);
+}
+
+void	ft_putname(char *name)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (name[i])
+		i++;
+	j = 0;
+	while (i - j && name[i - j] != '/')
+		j++;
+	j--;
+	ft_putstr_fd(&name[i - j], 2);
 }
 
 int		size_len(t_indir *lst)
