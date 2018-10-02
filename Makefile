@@ -6,7 +6,7 @@
 #    By: rfontain <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/28 20:51:07 by rfontain          #+#    #+#              #
-#    Updated: 2018/09/30 18:19:24 by rfontain         ###   ########.fr        #
+#    Updated: 2018/10/01 23:35:03 by rfontain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,11 +32,11 @@ SRCS =	src/deal.c			\
 		src/ft_ls.c			\
 		src/tools.c			\
 		src/utiles.c		\
-		src/random.c		\
 		src/sort_list.c		\
 		src/file_tools.c	\
 		src/list_tools.c	\
 		src/sort_tools.c	\
+		src/rfunctions.c	\
 		src/list_utiles.c	\
 		src/flag_handler.c	\
 		src/list_handler.c	\

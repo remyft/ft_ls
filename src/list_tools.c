@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 00:50:29 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:33:55 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int			get_rec_right(t_indir *list, char *par)
 	return (S_ISDIR(file_stat.st_mode));
 }
 
-void		deal_dlist(t_indir *list, char *name, t_fg *g_fg)
+void		deal_dlist(t_indir *list, char *name, t_fg *e_fg)
 {
 	char	*tmp;
 	t_lst	*file;
@@ -43,7 +43,7 @@ void		deal_dlist(t_indir *list, char *name, t_fg *g_fg)
 	else
 		ft_putend(tmp, ":\n");
 	file = lst_new(tmp);
-	deal_file(file, g_fg);
+	deal_file(file, e_fg);
 	free(file->name);
 	free(file);
 	free(tmp);
@@ -59,7 +59,7 @@ static void	deal_link(t_indir *list, int max)
 	free(space);
 }
 
-void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *g_fg)
+void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *e_fg)
 {
 	char	*space;
 	char	*time;
@@ -70,7 +70,7 @@ void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *g_fg)
 	ft_putend(list->uid_user, space);
 	ft_strdel(&space);
 	space = nb_space(list->gid_user, 0, ug_size.y);
-	!(*g_fg & LONGO) ? ft_putend(list->gid_user, space) : ft_putstr("");
+	!(*e_fg & LONGO) ? ft_putend(list->gid_user, space) : ft_putstr("");
 	ft_strdel(&space);
 	space = nb_space(NULL, size_len(list), max_len.x);
 	if (list->minor >= 0)
@@ -83,7 +83,7 @@ void		deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len, t_fg *g_fg)
 	ft_putchar(' ');
 	ft_strdel(&space);
 	time = get_time(list->time, list->itime);
-	(*g_fg) & LONG_T ? ft_putend(&(list->time[4]), " ") : ft_putend(time, " ");
+	(*e_fg) & LONG_T ? ft_putend(&(list->time[4]), " ") : ft_putend(time, " ");
 	free(time);
 	ft_putstr(list->name);
 }

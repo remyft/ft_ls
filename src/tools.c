@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 23:14:40 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 21:54:29 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:40:59 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	put_nosuch(t_list *such)
 	}
 }
 
-void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
+void	deal_solo(int i, int ac, char **av, t_fg *e_fg)
 {
 	t_lst	*file;
 	t_list	*nosuch;
@@ -44,7 +44,7 @@ void	deal_solo(int i, int ac, char **av, t_fg *g_fg)
 	else
 	{
 		file = (ac - i == 1) ? lst_new(av[i]) : lst_new(".");
-		deal_file(file, g_fg);
+		deal_file(file, e_fg);
 		free(file->name);
 		free(file);
 	}
@@ -76,7 +76,7 @@ void	put_ferror(int error, t_lst *lst)
 		return ;
 	else if (error & F_IS_LINK)
 	{
-		if (*(lst->g_fg) & LONG_LISTING)
+		if (*(lst->e_fg) & LONG_LISTING)
 		{
 			indir = set_indir(lst->name, '-');
 			if (!(indir = set_stat_indir(&indir, indir, lst, ".")))
@@ -85,8 +85,8 @@ void	put_ferror(int error, t_lst *lst)
 				free(indir);
 				return ;
 			}
-			put_llist(indir, -1, lst, lst->g_fg);
-			free_list(indir, lst->g_fg);
+			put_llist(indir, -1, lst, lst->e_fg);
+			free_list(indir, lst->e_fg);
 		}
 		else
 			ft_putendl(lst->name);
@@ -101,13 +101,13 @@ void	put_error(int error, t_lst *lst, DIR *dir)
 		closedir(dir);
 	if (errno == ENOTDIR)
 	{
-		if (*(lst->g_fg) & LONG_LISTING)
+		if (*(lst->e_fg) & LONG_LISTING)
 		{
 			indir = set_indir(lst->name, '-');
 			if (!(indir = set_stat_indir(&indir, indir, lst, ".")))
-				return (free_list(indir, lst->g_fg));
-			put_llist(indir, -1, lst, lst->g_fg);
-			free_list(indir, lst->g_fg);
+				return (free_list(indir, lst->e_fg));
+			put_llist(indir, -1, lst, lst->e_fg);
+			free_list(indir, lst->e_fg);
 		}
 		else
 			ft_putendl(lst->name);

@@ -6,40 +6,40 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:15:30 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 01:06:48 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:40:11 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_ls.h"
 
-void	deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg)
+void	deal_flags(t_lst *lst, t_indir *end, int size, t_fg *e_fg)
 {
-	if (*g_fg & DATE_SORT || *g_fg & LONG_LISTING || *g_fg & LONGO
-			|| *g_fg & SIZE_SORT)
+	if (*e_fg & DATE_SORT || *e_fg & LONG_LISTING || *e_fg & LONGO
+			|| *e_fg & SIZE_SORT)
 		if (!(lst->indir = set_stat_indir(&(lst->indir), lst->indir,
 			lst, lst->name)))
 			return ;
-	if (*g_fg & DATE_SORT && !(*g_fg & UNSORT) && !(*g_fg & SIZE_SORT))
+	if (*e_fg & DATE_SORT && !(*e_fg & UNSORT) && !(*e_fg & SIZE_SORT))
 		sort_date(lst->indir, size);
-	if (*g_fg & SIZE_SORT && !(*g_fg & UNSORT))
+	if (*e_fg & SIZE_SORT && !(*e_fg & UNSORT))
 		sort_size(lst->indir, size);
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
 	end = lst->indir;
 	while (end->next)
 		end = end->next;
-	if (*g_fg & LONG_LISTING || *g_fg & LONGO)
-		(*g_fg & REVERSE) ? put_llist(end, lst->nb_blk, lst, g_fg)
-			: put_llist(lst->indir, lst->nb_blk, lst, g_fg);
+	if (*e_fg & LONG_LISTING || *e_fg & LONGO)
+		(*e_fg & REVERSE) ? put_llist(end, lst->nb_blk, lst, e_fg)
+			: put_llist(lst->indir, lst->nb_blk, lst, e_fg);
 	else
-		(*g_fg & REVERSE) ? put_list(end, size, g_fg)
-			: put_list(lst->indir, size, g_fg);
-	if (*g_fg & RECURSIVE)
-		(*g_fg & REVERSE) ? put_dlist(end, size, lst, g_fg)
-			: put_dlist(lst->indir, size, lst, g_fg);
+		(*e_fg & REVERSE) ? put_list(end, size, e_fg)
+			: put_list(lst->indir, size, e_fg);
+	if (*e_fg & RECURSIVE)
+		(*e_fg & REVERSE) ? put_dlist(end, size, lst, e_fg)
+			: put_dlist(lst->indir, size, lst, e_fg);
 }
 
-void	deal_file(t_lst *lst, t_fg *g_fg)
+void	deal_file(t_lst *lst, t_fg *e_fg)
 {
 	int				i;
 	t_indir			*end;
@@ -48,7 +48,7 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 
 	end = NULL;
 	lst->nb_blk = 0;
-	lst->g_fg = g_fg;
+	lst->e_fg = e_fg;
 	dir = NULL;
 	if (readlink(lst->name, &tmp[0], 256) != -1)
 		return (put_error(F_IS_LINK, lst, dir));
@@ -58,15 +58,15 @@ void	deal_file(t_lst *lst, t_fg *g_fg)
 	if (!(lst->indir = set_list(&i, &end, dir)))
 		return (put_error(1 << 2, lst, dir));
 	lst->size = i;
-	if (!(*g_fg & UNSORT))
+	if (!(*e_fg & UNSORT))
 		sort_alpha(lst->indir, i);
 	while (lst->indir->prev)
 		lst->indir = lst->indir->prev;
-	deal_flags(lst, end, lst->size, g_fg);
-	free_list(lst->indir, g_fg);
+	deal_flags(lst, end, lst->size, e_fg);
+	free_list(lst->indir, e_fg);
 }
 
-void	big_deal(t_lst *list, t_fg *g_fg)
+void	big_deal(t_lst *list, t_fg *e_fg)
 {
 	t_lst	*begin;
 	t_lst	*mid;
@@ -74,8 +74,8 @@ void	big_deal(t_lst *list, t_fg *g_fg)
 	begin = list;
 	list = set_stat_list(list);
 	list = sort_list(list);
-	mid = sort_not_dir(list, g_fg);
-	sort_dir(mid, g_fg);
+	mid = sort_not_dir(list, e_fg);
+	sort_dir(mid, e_fg);
 	while (begin->prev)
 		begin = begin->prev;
 	list = begin;
@@ -86,7 +86,7 @@ void	big_deal(t_lst *list, t_fg *g_fg)
 		if (list->size != 1 && begin->isdir == 1)
 			ft_putend(begin->name, ":\n");
 		mid = begin->next;
-		deal_file(begin, g_fg);
+		deal_file(begin, e_fg);
 		begin = mid;
 	}
 	big_free(list);
@@ -113,7 +113,7 @@ void	deal_such(t_list *such)
 	put_nosuch(begin);
 }
 
-void	big_deal_list(int i, int ac, char **av, t_fg *g_fg)
+void	big_deal_list(int i, int ac, char **av, t_fg *e_fg)
 {
 	t_list	*begsuch;
 	t_list	*currsuch;
@@ -136,5 +136,5 @@ void	big_deal_list(int i, int ac, char **av, t_fg *g_fg)
 	if (begsuch)
 		deal_such(begsuch);
 	if (begin)
-		big_deal(begin, g_fg);
+		big_deal(begin, e_fg);
 }

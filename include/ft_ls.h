@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 19:53:05 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 21:54:04 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:42:21 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,29 +77,29 @@ typedef struct		s_lst
 	int				size_f;
 	int				stat;
 	time_t			itime;
-	t_fg			*g_fg;
+	t_fg			*e_fg;
 	char			*name;
 	t_indir			*indir;
 	struct s_lst	*next;
 	struct s_lst	*prev;
 }					t_lst;
 
-void				get_flag(char *flags, t_fg *g_fg);
+void				get_flag(char *flags, t_fg *e_fg);
 
-void				deal_flags(t_lst *lst, t_indir *end, int size, t_fg *g_fg);
-void				deal_file(t_lst *lst, t_fg *g_fg);
-void				big_deal(t_lst *list, t_fg *g_fg);
+void				deal_flags(t_lst *lst, t_indir *end, int size, t_fg *e_fg);
+void				deal_file(t_lst *lst, t_fg *e_fg);
+void				big_deal(t_lst *list, t_fg *e_fg);
 void				deal_such(t_list *such);
-void				big_deal_list(int i, int ac, char **av, t_fg *g_fg);
+void				big_deal_list(int i, int ac, char **av, t_fg *e_fg);
 
 int					cmp_file(char *name);
 char				*get_time(char *file, time_t itime);
 void				max_size(t_indir *lst, int *uid_size, int *gid_size,
-		t_fg *g_fg);
+		t_fg *e_fg);
 char				*nb_space(char *str, int nb, int size);
 
 void				put_nosuch(t_list *such);
-void				deal_solo(int i, int ac, char **av, t_fg *g_fg);
+void				deal_solo(int i, int ac, char **av, t_fg *e_fg);
 int					str_swap(t_indir *one, t_indir *two);
 void				put_ferror(int error, t_lst *lst);
 void				put_error(int error, t_lst *lst, DIR *dir);
@@ -107,14 +107,15 @@ void				put_error(int error, t_lst *lst, DIR *dir);
 void				sort_alpha(t_indir *names, int size);
 void				sort_date(t_indir *names, int size);
 void				sort_size(t_indir *names, int size);
+
 t_lst				*sort_list(t_lst *list);
-t_lst				*sort_not_dir(t_lst *list, t_fg *g_fg);
-void				sort_dir(t_lst *list, t_fg *g_fg);
+t_lst				*sort_not_dir(t_lst *list, t_fg *e_fg);
+void				sort_dir(t_lst *list, t_fg *e_fg);
 
 void				ft_putname(char *name);
 int					nb_len(int nb);
 int					size_len(t_indir *lst);
-int					len_list(t_indir *list, t_fg *g_fg);
+int					len_list(t_indir *list, t_fg *e_fg);
 int					max_int(int nb1, int nb2);
 
 t_indir				*set_indir(char *name, unsigned char type);
@@ -122,9 +123,9 @@ t_indir				*set_stat_indir(t_indir **lst, t_indir *begin,
 		t_lst *par, char *par_name);
 
 int					get_rec_right(t_indir *list, char *par);
-void				deal_dlist(t_indir *list, char *name, t_fg *g_fg);
+void				deal_dlist(t_indir *list, char *name, t_fg *e_fg);
 void				deal_llist(t_indir *list, t_dbl ug_size, t_dbl max_len,
-		t_fg *g_fg);
+		t_fg *e_fg);
 void				deal_slink(t_indir *list, char *par_name);
 
 t_indir				*set_list(int *i, t_indir **end, DIR *dir);
@@ -133,18 +134,18 @@ t_list				*fill_such(t_list **begsuch, t_list *currsuch, char **av,
 		int i);
 t_lst				*fill_list(t_lst **begin, t_lst *prev, char **av, int i);
 
-void				free_list(t_indir *curr, t_fg *g_fg);
+void				free_list(t_indir *curr, t_fg *e_fg);
 t_lst				*lst_new(char *file);
-void				put_list(t_indir *list, int size, t_fg *g_fg);
-void				put_dlist(t_indir *list, int size, t_lst *par, t_fg *g_fg);
+void				put_list(t_indir *list, int size, t_fg *e_fg);
+void				put_dlist(t_indir *list, int size, t_lst *par, t_fg *e_fg);
 void				put_llist(t_indir *list, int nb_blk, t_lst *par,
-		t_fg *g_fg);
+		t_fg *e_fg);
 
 void				assign_char(char **str, char *assign);
 void				join_char(char **str, char *beg, char *end, int choice);
 void				double_int(int *targ1, int *targ2, int val1, int val2);
-int					max_link_len(t_indir *list, t_fg *g_fg);
-int					max_nblen(t_indir *lst, t_fg *g_fg);
+int					max_link_len(t_indir *list, t_fg *e_fg);
+int					max_nblen(t_indir *lst, t_fg *e_fg);
 
 char				*set_right(mode_t file_stat, char *file_name);
 

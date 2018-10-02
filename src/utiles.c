@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/01 21:53:49 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:31:27 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		max_int(int nb1, int nb2)
 	return ((nb1 > nb2) ? nb1 : nb2);
 }
 
-int		len_list(t_indir *list, t_fg *g_fg)
+int		len_list(t_indir *list, t_fg *e_fg)
 {
 	t_indir	*curr;
 	int		i;
@@ -63,7 +63,7 @@ int		len_list(t_indir *list, t_fg *g_fg)
 	while (curr)
 	{
 		if (curr->name[0] != '.' || (cmp_file(curr->name)
-					&& *g_fg & HIDEN_FILE))
+					&& *e_fg & HIDEN_FILE))
 			i++;
 		curr = curr->next;
 	}

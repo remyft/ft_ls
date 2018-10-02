@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/28 20:32:13 by rfontain          #+#    #+#             */
-/*   Updated: 2018/09/30 22:30:00 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/02 19:32:41 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,54 +35,54 @@ t_lst	*sort_list(t_lst *list)
 	return (begin);
 }
 
-int		check_sort(t_lst *list, t_fg *g_fg, int sort)
+int		check_sort(t_lst *list, t_fg *e_fg, int sort)
 {
 	if (sort == 0)
 	{
-		if ((((*g_fg) & REVERSE
+		if ((((*e_fg) & REVERSE
 			&& ft_strcmp(list->name, list->next->name) < 0)
-				|| (!((*g_fg) & REVERSE)
+				|| (!((*e_fg) & REVERSE)
 					&& ft_strcmp(list->name, list->next->name) > 0))
-						&& !(*g_fg & DATE_SORT || *g_fg & SIZE_SORT))
+						&& !(*e_fg & DATE_SORT || *e_fg & SIZE_SORT))
 			return (1);
 	}
 	else if (sort == 1)
 	{
-		if ((((*g_fg) & REVERSE && list->itime > list->next->itime)
-				|| (!((*g_fg) & REVERSE)
+		if ((((*e_fg) & REVERSE && list->itime > list->next->itime)
+				|| (!((*e_fg) & REVERSE)
 					&& list->itime < list->next->itime)))
 			return (1);
 	}
 	else
 	{
-		if ((((*g_fg) & REVERSE && list->size > list->next->size)
-					|| (!((*g_fg) & REVERSE) && list->size < list->next->size)))
+		if ((((*e_fg) & REVERSE && list->size > list->next->size)
+					|| (!((*e_fg) & REVERSE) && list->size < list->next->size)))
 			return (1);
 	}
 	return (0);
 }
 
-int		decide_list(t_lst *list, t_fg *g_fg)
+int		decide_list(t_lst *list, t_fg *e_fg)
 {
-	if (!(*g_fg & DATE_SORT) && !(*g_fg & SIZE_SORT) &&
-			check_sort(list, g_fg, 0))
+	if (!(*e_fg & DATE_SORT) && !(*e_fg & SIZE_SORT) &&
+			check_sort(list, e_fg, 0))
 		return (1);
-	else if (*g_fg & DATE_SORT && !(*g_fg & SIZE_SORT) &&
-			check_sort(list, g_fg, 1) && list->itime)
+	else if (*e_fg & DATE_SORT && !(*e_fg & SIZE_SORT) &&
+			check_sort(list, e_fg, 1) && list->itime)
 		return (1);
-	else if (check_sort(list, g_fg, 2) && list->size_f)
+	else if (check_sort(list, e_fg, 2) && list->size_f)
 		return (1);
 	return (0);
 }
 
-t_lst	*sort_not_dir(t_lst *list, t_fg *g_fg)
+t_lst	*sort_not_dir(t_lst *list, t_fg *e_fg)
 {
 	t_lst *begin;
 
 	begin = list;
 	while (list->next && list->next->isdir == 0)
 	{
-		if (decide_list(list, g_fg))
+		if (decide_list(list, e_fg))
 		{
 			list_swap(list, list->next);
 			list = ret_list(list);
@@ -96,14 +96,14 @@ t_lst	*sort_not_dir(t_lst *list, t_fg *g_fg)
 		return (list);
 }
 
-void	sort_dir(t_lst *list, t_fg *g_fg)
+void	sort_dir(t_lst *list, t_fg *e_fg)
 {
 	t_lst *begin;
 
 	begin = list;
 	while (list && list->next)
 	{
-		if (decide_list(list, g_fg))
+		if (decide_list(list, e_fg))
 		{
 			list_swap(list, list->next);
 			while (list->prev && list->prev->isdir == 1)
