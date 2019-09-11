@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:06:59 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/02 19:31:27 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/12 18:36:08 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,18 @@ void	ft_putname(char *name)
 {
 	int		i;
 	int		j;
+	int		slash;
 
 	i = 0;
+	slash = 0;
 	while (name[i])
+	{
+		if (name[i] == '/')
+			slash = 1;
 		i++;
+	}
+	if (!slash)
+		return (ft_putstr_fd(name, 2));
 	j = 0;
 	while (i - j && name[i - j] != '/')
 		j++;

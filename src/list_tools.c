@@ -6,7 +6,7 @@
 /*   By: rfontain <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 03:00:44 by rfontain          #+#    #+#             */
-/*   Updated: 2018/10/02 19:33:55 by rfontain         ###   ########.fr       */
+/*   Updated: 2018/10/12 18:52:14 by rfontain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void		deal_dlist(t_indir *list, char *name, t_fg *e_fg)
 	join_char(&tmp, tmp, "/", 1);
 	join_char(&tmp, tmp, list->name, 1);
 	ft_putchar('\n');
-	if (name[0] == '/' && name[1] == '/')
+	if (tmp[0] == '/' && tmp[1] == '/')
 		ft_putend(tmp + 1, ":\n");
 	else
 		ft_putend(tmp, ":\n");
